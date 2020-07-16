@@ -1,7 +1,9 @@
+import asyncio
 import sys
 
 from PyQt5 import QtWidgets
 from main_window import MainWindow
+import bluetooth
 
 
 def main():
@@ -14,4 +16,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    loop = asyncio.get_event_loop()
+    for d in loop.run_until_complete(bluetooth.get_nearby_devices()):
+        print(d)
