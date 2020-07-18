@@ -76,15 +76,15 @@ class BluetoothSession:
             lvl = struct.pack('BBBBBB', 0xf0, 0xa6, 0x01, 0x01, self.level + 1, (0xf0 + 0xa6 + 3 + self.level) & 0xFF)
             await client.write_gatt_char(self.characteristic_uuid, lvl, response=True)
 
-            time.sleep(0.5)
+            time.sleep(0.2)
 
             # Starting the workout session.
             await client.write_gatt_char(self.characteristic_uuid, START, response=True)
 
-            time.sleep(0.5)
+            time.sleep(0.1)
 
             # Reading the current data from the exercise bike. Should be called while the workout session is active.
-            for i in range(self.duration):
+            for i in range(self.duration + 1):
                 await client.write_gatt_char(self.characteristic_uuid, READ, response=True)
                 time.sleep(1)
 

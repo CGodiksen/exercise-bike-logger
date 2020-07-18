@@ -5,6 +5,7 @@ the specific workout and the CSV file containing a row for each workout.
 """
 import csv
 import struct
+import os
 from pathlib import Path
 
 
@@ -25,34 +26,37 @@ def process_read_response(data, filename):
 
     data = struct.unpack('BBBBBBBBBBBBBBBBBBBBB', data)
 
-    with open(f"data/workouts/{filename}.csv", "a+", newline="") as csvfile:
-        data_writer = csv.writer(csvfile)
-        data_writer.writerow(["test1"])
-
     # Doing necessary data preprocessing.
     data = [element - 1 for element in data]
 
-    print(data)
-
-    print(f"Time: {data[2]:02d}:{data[3]:02d}:{data[4]:02d}:{data[5]:02d}")
+    row = [f"{data[2]:02d}:{data[3]:02d}:{data[4]:02d}:{data[5]:02d}"]
 
     speed = ((100 * (data[6]) + data[7]) / 10.0)
-    print(f"Speed: {speed:3.1f} km/h")
+    row.append(f"{speed:3.1f}")
 
     rpm = (100 * (data[8]) + data[9])
-    print(f"RPM: {rpm:3d}")
+    row.append(f"{rpm}")
 
     distance = ((100 * (data[10]) + data[11]) / 10.0)
-    print(f"Distance: {distance:3.1f} km")
+    row.append(f"{distance:3.1f}")
 
     calories = (100 * (data[12]) + data[13])
-    print(f"Calories: {calories:3d} kcal")
+    row.append(f"{calories}")
 
     hr = (100 * (data[14]) + data[15])
-    print(f"Heart rate: {hr:3d}")
+    row.append(f"{hr}")
 
     power = ((100 * (data[16]) + data[17]) / 10.0)
-    print(f"Power: {power:3.1f} W")
+    row.append(f"{power:3.1f}")
 
     lvl = data[18]
-    print(f"Level: {lvl}\n")
+    row.append(f"{lvl}")
+
+    with open(f"data/workouts/{filename}.csv", "a+", newline="") as csvfile:
+        data_writer = csv.writer(csvfile)
+
+        # If the file is empty then we start by adding a header.
+        if os.stat(f"data/workouts/{filename}.csv").st_size == 0:
+            data_writer.writerow(["time", "speed", "rpm", "distance", "calories", "heart_rate", "watt", "level"])
+
+        data_writer.writerow(row)

@@ -29,5 +29,5 @@ if __name__ == '__main__':
     address = "***REMOVED***"
 
     # Using Epoch time as the filename to ensure that each workout session has an unique filename.
-    bx70i = bluetooth_session.BluetoothSession(characteristic_uuid, address, loop, f"{time.time():.0f}", 12, 120)
+    bx70i = bluetooth_session.BluetoothSession(characteristic_uuid, address, loop, f"{time.time():.0f}", 13, 1800)
     loop.run_until_complete(bx70i.start_session())
