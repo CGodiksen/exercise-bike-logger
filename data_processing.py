@@ -3,12 +3,31 @@ Module containing helper functions for processing the data from the exercise bik
 further information about the workout session. Two CSV files are manipulated in this module, the unique CSV file for
 the specific workout and the CSV file containing a row for each workout.
 """
+import csv
 import struct
+from pathlib import Path
 
 
-def process_read_response(data):
-    """Processing the response from the READ write operation and saving the processed data to a csv file."""
+def create_storage_setup():
+    """Creates the needed storage setup if it does not already exist."""
+    # Creating the "data/workouts" directories if they do not already exist.
+    Path("data/workouts").mkdir(parents=True, exist_ok=True)
+
+
+def process_read_response(data, filename):
+    """
+    Processing the response from the READ write operation and saving the processed data to a csv file.
+
+    :param data: The data package that contains information about the current state of the workout session.
+    :param filename: The filename of the CSV file where the processed data should be saved.
+    """
+    create_storage_setup()
+
     data = struct.unpack('BBBBBBBBBBBBBBBBBBBBB', data)
+
+    with open(f"data/workouts/{filename}.csv", "a+", newline="") as csvfile:
+        data_writer = csv.writer(csvfile)
+        data_writer.writerow(["test1"])
 
     # Doing necessary data preprocessing.
     data = [element - 1 for element in data]

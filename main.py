@@ -1,9 +1,10 @@
 import asyncio
 import sys
+import time
 
 from PyQt5 import QtWidgets
 
-import bluetooth
+import bluetooth_session
 from main_window import MainWindow
 
 
@@ -27,4 +28,6 @@ if __name__ == '__main__':
     characteristic_uuid = "***REMOVED***"
     address = "***REMOVED***"
 
-    loop.run_until_complete(bluetooth.start_session(12, 5, characteristic_uuid, address, loop))
+    # Using Epoch time as the filename to ensure that each workout session has an unique filename.
+    bx70i = bluetooth_session.BluetoothSession(characteristic_uuid, address, loop, f"{time.time():.0f}", 12, 120)
+    loop.run_until_complete(bx70i.start_session())
