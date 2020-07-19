@@ -17,12 +17,16 @@ def create_storage_setup():
     Path("data/workouts").mkdir(parents=True, exist_ok=True)
 
 
-def process_read_response(data, filename):
+def process_read_response(data, filename, duration):
     """
     Processing the response from the READ write operation and saving the processed data to a csv file.
 
     :param data: The data package that contains information about the current state of the workout session.
     :param filename: The CSV file in which the processed data should be saved.
+    :param duration: The total duration of the workout session.
+
+    :return: True if the time in the data is equal to the total duration of the workout session, meaning that the
+    session is complete. Otherwise returns False. This is used to stop the session at the correct time.
     """
     create_storage_setup()
 
@@ -63,6 +67,8 @@ def process_read_response(data, filename):
             data_writer.writerow(["time", "speed", "rpm", "distance", "calories", "heart_rate", "watt", "level"])
 
         data_writer.writerow(new_row)
+
+    return True if f"{data[2]:02d}:{data[3]:02d}:{data[4]:02d}:{data[5]:02d}" == duration else False
 
 
 def process_workout_session(filename):

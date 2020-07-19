@@ -35,12 +35,12 @@ class BluetoothSession:
         """
         Method called when the Bluetooth object is initialized.
 
-        :param characteristic_uuid: # The characteristic that should be written to.
+        :param characteristic_uuid: The characteristic that should be written to.
         :param address: The MAC address of the device that we want to connect with.
         :param loop: The asyncio event loop that should be used by the BleakClient.
         :param filename: The CSV file in which the data should be saved.
         :param level: The resistance level that is chosen for this specific workout.
-        :param duration: The duration of the workout session in seconds.
+        :param duration: The total duration of the workout session as a string with the format "DD:HH:MM:SS".
         """
         self.characteristic_uuid = characteristic_uuid
         self.address = address
@@ -48,6 +48,9 @@ class BluetoothSession:
         self.filename = filename
         self.level = level
         self.duration = duration
+
+        # Flag that is set to True when the workout session is complete.
+        self.stop_flag = False
 
     # TODO: Split this method into multiple methods.
     async def start_session(self):
@@ -72,6 +75,7 @@ class BluetoothSession:
 
             await client.write_gatt_char(self.characteristic_uuid, INIT_A4)
 
+            # TODO: Maybe make it possible to change the resistance level during the workout.
             # Setting the resistance level for the workout session.
             lvl = struct.pack('BBBBBB', 0xf0, 0xa6, 0x01, 0x01, self.level + 1, (0xf0 + 0xa6 + 3 + self.level) & 0xFF)
             await client.write_gatt_char(self.characteristic_uuid, lvl)
@@ -83,8 +87,8 @@ class BluetoothSession:
 
             time.sleep(0.1)
 
-            # Reading the current data from the exercise bike. Should be called while the workout session is active.
-            for i in range(self.duration + 1):
+            while not self.stop_flag:
+                # Reading the current data from the exercise bike. Should be called while the workout session is active.
                 await client.write_gatt_char(self.characteristic_uuid, READ)
                 time.sleep(1)
 
@@ -99,4 +103,5 @@ class BluetoothSession:
         """Handling the notifications that are received from a characteristic."""
         # If the data has a length of 21 we know it is a response from the READ write operation.
         if len(data) == 21:
-            data_processing.process_read_response(data, self.filename)
+            # The process_read_response function returns True if the time in the data is equal to self.duration.
+            self.stop_flag = data_processing.process_read_response(data, self.filename, self.duration)
