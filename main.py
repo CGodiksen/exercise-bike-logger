@@ -8,7 +8,6 @@ import bluetooth_session
 from main_window import MainWindow
 
 
-# TODO: Make a class with functions that can read from the csv files and calculate statistics.
 def main():
     app = QtWidgets.QApplication(sys.argv)
 

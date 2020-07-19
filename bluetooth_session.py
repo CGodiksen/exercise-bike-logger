@@ -38,7 +38,7 @@ class BluetoothSession:
         :param characteristic_uuid: # The characteristic that should be written to.
         :param address: The MAC address of the device that we want to connect with.
         :param loop: The asyncio event loop that should be used by the BleakClient.
-        :param filename: The filename of the CSV file where the data should be saved.
+        :param filename: The CSV file in which the data should be saved.
         :param level: The resistance level that is chosen for this specific workout.
         :param duration: The duration of the workout session in seconds.
         """
@@ -61,36 +61,39 @@ class BluetoothSession:
             # Activating notifications on the characteristic that is written to.
             await client.start_notify(self.characteristic_uuid, self.notification_handler)
 
-            await client.write_gatt_char(self.characteristic_uuid, PING, response=True)
+            await client.write_gatt_char(self.characteristic_uuid, PING)
 
-            await client.write_gatt_char(self.characteristic_uuid, INIT_A0, response=True)
+            await client.write_gatt_char(self.characteristic_uuid, INIT_A0)
 
             for i in range(5):
-                await client.write_gatt_char(self.characteristic_uuid, PING, response=True)
+                await client.write_gatt_char(self.characteristic_uuid, PING)
 
-            await client.write_gatt_char(self.characteristic_uuid, INIT_A3, response=True)
+            await client.write_gatt_char(self.characteristic_uuid, INIT_A3)
 
-            await client.write_gatt_char(self.characteristic_uuid, INIT_A4, response=True)
+            await client.write_gatt_char(self.characteristic_uuid, INIT_A4)
 
             # Setting the resistance level for the workout session.
             lvl = struct.pack('BBBBBB', 0xf0, 0xa6, 0x01, 0x01, self.level + 1, (0xf0 + 0xa6 + 3 + self.level) & 0xFF)
-            await client.write_gatt_char(self.characteristic_uuid, lvl, response=True)
+            await client.write_gatt_char(self.characteristic_uuid, lvl)
 
             time.sleep(0.2)
 
             # Starting the workout session.
-            await client.write_gatt_char(self.characteristic_uuid, START, response=True)
+            await client.write_gatt_char(self.characteristic_uuid, START)
 
             time.sleep(0.1)
 
             # Reading the current data from the exercise bike. Should be called while the workout session is active.
             for i in range(self.duration + 1):
-                await client.write_gatt_char(self.characteristic_uuid, READ, response=True)
+                await client.write_gatt_char(self.characteristic_uuid, READ)
                 time.sleep(1)
 
             # Stopping the session on the bike itself and deactivating notifications on the characteristic.
             await client.write_gatt_char(self.characteristic_uuid, STOP)
             await client.stop_notify(self.characteristic_uuid)
+
+            # Processing the entire workout session to extract further data.
+            data_processing.process_workout_session(self.filename)
 
     def notification_handler(self, sender, data):
         """Handling the notifications that are received from a characteristic."""
