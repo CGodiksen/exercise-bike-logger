@@ -17,13 +17,14 @@ def create_storage_setup():
     Path("data/workouts").mkdir(parents=True, exist_ok=True)
 
 
-def process_read_response(data, filename, duration):
+def process_read_response(data, filename, duration, display_updater):
     """
     Processing the response from the READ write operation and saving the processed data to a csv file.
 
     :param data: The data package that contains information about the current state of the workout session.
     :param filename: The CSV file in which the processed data should be saved.
     :param duration: The total duration of the workout session.
+    :param display_updater: The function that updates the display widgets on the live workout page.
 
     :return: True if the time in the data is equal to the total duration of the workout session, meaning that the
     session is complete. Otherwise returns False. This is used to stop the session at the correct time.
@@ -36,7 +37,7 @@ def process_read_response(data, filename, duration):
     data = [element - 1 for element in data]
 
     # Adding each element of data from the READ response to a single list, starting with the time.
-    new_row = [f"{data[2]:02d}:{data[3]:02d}:{data[4]:02d}:{data[5]:02d}"]
+    new_row = [f"{data[3]:02d}:{data[4]:02d}:{data[5]:02d}"]
 
     speed = ((100 * (data[6]) + data[7]) / 10.0)
     new_row.append(f"{speed:3.1f}")
@@ -53,8 +54,8 @@ def process_read_response(data, filename, duration):
     heart_rate = (100 * (data[14]) + data[15])
     new_row.append(f"{heart_rate}")
 
-    power = ((100 * (data[16]) + data[17]) / 10.0)
-    new_row.append(f"{power:3.1f}")
+    watt = ((100 * (data[16]) + data[17]) / 10.0)
+    new_row.append(f"{watt:3.1f}")
 
     lvl = data[18]
     new_row.append(f"{lvl}")
@@ -68,7 +69,10 @@ def process_read_response(data, filename, duration):
 
         data_writer.writerow(new_row)
 
-    return True if f"{data[2]:02d}:{data[3]:02d}:{data[4]:02d}:{data[5]:02d}" == duration else False
+    # Updating the display widgets on the live workout page.
+    display_updater(new_row)
+
+    return True if f"{data[3]:02d}:{data[4]:02d}:{data[5]:02d}" == duration else False
 
 
 def process_workout_session(filename):

@@ -31,7 +31,7 @@ class BluetoothSession:
     One BluetoothSession object represents one workout session.
     """
 
-    def __init__(self, characteristic_uuid, address, loop, filename, level, duration):
+    def __init__(self, characteristic_uuid, address, loop, filename, level, duration, display_updater):
         """
         Method called when the Bluetooth object is initialized.
 
@@ -40,7 +40,9 @@ class BluetoothSession:
         :param loop: The asyncio event loop that should be used by the BleakClient.
         :param filename: The CSV file in which the data should be saved.
         :param level: The resistance level that is chosen for this specific workout.
-        :param duration: The total duration of the workout session as a string with the format "DD:HH:MM:SS".
+        :param duration: The total duration of the workout session as a string with the format "HH:MM:SS".
+        :param display_updater: The function that updates the display widgets on the live workout page. This is called
+        every time the data from a READ write response is processed.
         """
         self.characteristic_uuid = characteristic_uuid
         self.address = address
@@ -48,6 +50,7 @@ class BluetoothSession:
         self.filename = filename
         self.level = level
         self.duration = duration
+        self.display_updater = display_updater
 
         # Flag that is set to True when the workout session is complete.
         self.stop_flag = False
@@ -58,7 +61,6 @@ class BluetoothSession:
         Connecting to the device that is associated with the given MAC address, configuring the resistance level of the
         workout, starting the workout session and reading data from the bike every second until it is finished.
         """
-
         try:
             # A very specific protocol is followed to ensure that the connection with the exercise bike is initialized
             # correctly.
@@ -109,4 +111,5 @@ class BluetoothSession:
         # If the data has a length of 21 we know it is a response from the READ write operation.
         if len(data) == 21:
             # The process_read_response function returns True if the time in the data is equal to self.duration.
-            self.stop_flag = data_processing.process_read_response(data, self.filename, self.duration)
+            self.stop_flag = data_processing.process_read_response(data, self.filename, self.duration,
+                                                                   self.display_updater)
