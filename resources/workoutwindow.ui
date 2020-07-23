@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Live Workout</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="gridLayoutWidget">
@@ -120,19 +120,6 @@
           <set>Qt::AlignBottom|Qt::AlignHCenter</set>
          </property>
         </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </item>
@@ -330,6 +317,9 @@
        </item>
        <item alignment="Qt::AlignHCenter">
         <widget class="QPushButton" name="startWorkoutButton">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="minimumSize">
           <size>
            <width>200</width>
@@ -344,7 +334,7 @@
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(28, 153, 0);</string>
+          <string notr="true">background-color: rgb(0, 170, 0);</string>
          </property>
          <property name="text">
           <string>Start workout</string>

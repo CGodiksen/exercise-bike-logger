@@ -6,6 +6,7 @@ from PyQt5.QtCore import QThreadPool
 
 import bluetooth_session
 from worker import Worker
+from settings_dialog import Settings
 
 
 class WorkoutWindow(QtWidgets.QMainWindow):
@@ -18,11 +19,11 @@ class WorkoutWindow(QtWidgets.QMainWindow):
         # Setting up multi threading.
         self.threadpool = QThreadPool()
 
-        # TODO Find a way to avoid these being hardcoded.
-        # The characteristic that should be written to.
-        self.characteristic_uuid = "***REMOVED***"
+        # Loading the connection information from the settings.
+        self.settings = Settings()
+        self.address = self.settings.address
+        self.characteristic_uuid = self.settings.characteristic_uuid
 
-        self.address = "***REMOVED***"
         self.loop = asyncio.get_event_loop()
 
         # Connecting buttons to their corresponding functionality.

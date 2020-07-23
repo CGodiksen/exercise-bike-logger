@@ -17,11 +17,6 @@ STOP = struct.pack('BBBBBB', 0xf0, 0xa5, 0x01, 0x01, 0x04, 0x9b)
 READ = struct.pack('BBBBB', 0xf0, 0xa2, 0x01, 0x01, 0x94)
 
 
-async def get_nearby_devices():
-    """Finds nearby bluetooth low energy devices."""
-    return await bleak.discover(5)
-
-
 # TODO: Make it so it keeps trying to connect if the device can't be found.
 class BluetoothSession:
     """

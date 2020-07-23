@@ -1,6 +1,6 @@
-from workout_window import WorkoutWindow
-
 from PyQt5 import QtWidgets, uic
+
+from settings_dialog import SettingsDialog
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -10,6 +10,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # Load the UI Page
         uic.loadUi("resources/mainwindow.ui", self)
 
-        # Setting up the live workout window that is opened when the "New workout" button is pressed.
-        self.workout_window = WorkoutWindow()
-        self.newWorkoutButton.clicked.connect(self.workout_window.show)
+        # Connecting the buttons with their respective functionality.
+        self.settings_dialog = SettingsDialog()
+        self.settingsButton.clicked.connect(self.settings_dialog.show)

@@ -222,3 +222,4 @@ fabric.properties
 .idea/
 
 data/
+/resources/settings.json
