@@ -31,16 +31,21 @@ class WorkoutWindow(QtWidgets.QMainWindow):
 
         # Connecting buttons to their corresponding functionality.
         self.startWorkoutButton.clicked.connect(self.start_workout)
+        self.stopWorkoutButton.clicked.connect(self.stop_workout)
 
     def start_workout(self):
         """Setting up the BluetoothSession object and starting the session when the "Start workout" btn is pressed."""
         # Using Epoch time as the filename to ensure that each workout session has an unique filename.
         filename = f"{time.time():.0f}"
 
-        bx70i = bluetooth_session.BluetoothSession(self.characteristic_uuid, self.address, self.loop, filename,
-                                                   self.level, self.duration, self.update_live_page)
-        worker = Worker(self.loop.run_until_complete, bx70i.start_session())
+        self.bx70i = bluetooth_session.BluetoothSession(self.characteristic_uuid, self.address, self.loop, filename,
+                                                        self.level, self.duration, self.update_live_page)
+        worker = Worker(self.loop.run_until_complete, self.bx70i.start_session())
         self.threadpool.start(worker)
+
+    def stop_workout(self):
+        """Stopping the workout by setting the internal stop flag to True."""
+        self.bx70i.stop_flag = True
 
     def update_live_page(self, data):
         """
