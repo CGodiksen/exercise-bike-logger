@@ -14,7 +14,7 @@ class SettingsDialog(QtWidgets.QDialog):
     def __init__(self, *args, **kwargs):
         super(SettingsDialog, self).__init__(*args, **kwargs)
 
-        # Load the UI Page
+        # Load the UI Page.
         uic.loadUi("resources/settingsdialog.ui", self)
 
         # Loading the settings and writing them to their respective line edits.
