@@ -1,0 +1,7 @@
+bleak==0.7.1
+click==7.1.2
+pycparser==2.20
+PyQt5==5.15.0
+PyQt5-sip==12.8.0
+python-dotenv==0.14.0
+pythonnet==2.5.1

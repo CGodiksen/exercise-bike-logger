@@ -18,5 +18,5 @@ class ConfigureDialog(QtWidgets.QDialog):
         time = self.timeSpinBox.value()
         level = self.levelSpinBox.value()
 
-        self.workout_window = WorkoutWindow(time, level)
+        self.workout_window = WorkoutWindow(level, time)
         self.workout_window.show()
