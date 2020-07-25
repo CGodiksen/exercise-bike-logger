@@ -10,9 +10,10 @@ class ConfigureDialog(QtWidgets.QDialog):
         # Load the UI Page.
         uic.loadUi("resources/configuredialog.ui", self)
 
+        self.workout_window = None
+
         self.accepted.connect(self.ok)
 
-    # TODO: Convert the time in minutes into the actual string representation.
     def ok(self):
         """Creating the workout window using the given configurations."""
         time = self.timeSpinBox.value()

@@ -9,12 +9,15 @@ from worker import Worker
 from settings_dialog import Settings
 
 
+# TODO: Make it so you can manually change levels during the workout.
 class WorkoutWindow(QtWidgets.QMainWindow):
     def __init__(self, level, duration, *args, **kwargs):
         super(WorkoutWindow, self).__init__(*args, **kwargs)
 
         # Load the UI Page.
         uic.loadUi("resources/workoutwindow.ui", self)
+
+        self.session = None
 
         self.level = level
         self.duration = duration
@@ -27,8 +30,6 @@ class WorkoutWindow(QtWidgets.QMainWindow):
         self.address = self.settings.address
         self.characteristic_uuid = self.settings.characteristic_uuid
 
-        self.loop = asyncio.get_event_loop()
-
         # Connecting buttons to their corresponding functionality.
         self.startWorkoutButton.clicked.connect(self.start_workout)
         self.stopWorkoutButton.clicked.connect(self.stop_workout)
@@ -38,14 +39,16 @@ class WorkoutWindow(QtWidgets.QMainWindow):
         # Using Epoch time as the filename to ensure that each workout session has an unique filename.
         filename = f"{time.time():.0f}"
 
-        self.bx70i = bluetooth_session.BluetoothSession(self.characteristic_uuid, self.address, self.loop, filename,
-                                                        self.level, self.duration, self.update_live_page)
-        worker = Worker(self.loop.run_until_complete, self.bx70i.start_session())
+        loop = asyncio.get_event_loop()
+
+        self.session = bluetooth_session.BluetoothSession(self.characteristic_uuid, self.address, filename,
+                                                          self.level, self.duration, self.update_live_page)
+        worker = Worker(loop.run_until_complete, self.session.run_session())
         self.threadpool.start(worker)
 
     def stop_workout(self):
         """Stopping the workout by setting the internal stop flag to True."""
-        self.bx70i.stop_flag = True
+        self.session.stop_flag = True
 
     def update_live_page(self, data):
         """

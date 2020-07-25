@@ -4,9 +4,8 @@ further information about the workout session. Two CSV files are manipulated in 
 the specific workout and the CSV file containing a row for each workout.
 """
 import csv
-import struct
-import os
 import datetime
+import os
 import statistics
 from pathlib import Path
 
@@ -17,21 +16,15 @@ def create_storage_setup():
     Path("data/workouts").mkdir(parents=True, exist_ok=True)
 
 
-def process_read_response(data, filename, duration, display_updater):
+def process_read_response(data, filename, display_updater):
     """
     Processing the response from the READ write operation and saving the processed data to a csv file.
 
     :param data: The data package that contains information about the current state of the workout session.
     :param filename: The CSV file in which the processed data should be saved.
-    :param duration: The total duration of the workout session.
     :param display_updater: The function that updates the display widgets on the live workout page.
-
-    :return: True if the time in the data is equal to the total duration of the workout session, meaning that the
-    session is complete. Otherwise returns False. This is used to stop the session at the correct time.
     """
     create_storage_setup()
-
-    data = struct.unpack('BBBBBBBBBBBBBBBBBBBBB', data)
 
     # Doing necessary data preprocessing.
     data = [element - 1 for element in data]
@@ -71,8 +64,6 @@ def process_read_response(data, filename, duration, display_updater):
 
     # Updating the display widgets on the live workout page.
     display_updater(new_row)
-
-    return True if f"{data[3]:02d}:{data[4]:02d}:{data[5]:02d}" == duration else False
 
 
 def process_workout_session(filename):

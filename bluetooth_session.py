@@ -1,5 +1,6 @@
 import struct
 import time
+import asyncio
 
 import bleak
 import data_processing
@@ -26,22 +27,20 @@ class BluetoothSession:
     One BluetoothSession object represents one workout session.
     """
 
-    def __init__(self, characteristic_uuid, address, loop, filename, initial_level, duration, display_updater):
+    def __init__(self, characteristic_uuid, address, filename, initial_level, duration, display_updater):
         """
         Method called when the Bluetooth object is initialized.
 
         :param characteristic_uuid: The characteristic that should be written to.
         :param address: The MAC address of the device that we want to connect with.
-        :param loop: The asyncio event loop that should be used by the BleakClient.
         :param filename: The CSV file in which the data should be saved.
         :param initial_level: The resistance level that is chosen for this specific workout.
-        :param duration: The total duration of the workout session as a string with the format "HH:MM:SS".
+        :param duration: The total duration of the workout session in minutes.
         :param display_updater: The function that updates the display widgets on the live workout page. This is called
         every time the data from a READ write response is processed.
         """
         self.characteristic_uuid = characteristic_uuid
         self.address = address
-        self.loop = loop
         self.filename = filename
         self.initial_level = initial_level
         self.duration = duration
@@ -50,57 +49,60 @@ class BluetoothSession:
         # Flag that is set to True when the workout session is complete.
         self.stop_flag = False
 
+        self.client = None
+
     async def run_session(self):
         """
         Connecting to the device that is associated with the given MAC address, configuring the resistance level of the
         workout, starting the workout session and reading data from the bike every second until it is finished.
         """
         try:
-            async with bleak.BleakClient(self.address, loop=self.loop) as client:
-                await self.initialize_session(client)
+            loop = asyncio.get_event_loop()
+            async with bleak.BleakClient(self.address, loop=loop) as self.client:
+                await self.initialize_session()
 
-                await self.set_level(client, self.initial_level)
+                await self.set_level(self.initial_level)
                 time.sleep(0.2)
 
                 # Starting the workout session.
-                await client.write_gatt_char(self.characteristic_uuid, START)
+                await self.client.write_gatt_char(self.characteristic_uuid, START)
                 time.sleep(0.2)
 
                 while not self.stop_flag:
                     # Reading the current data from the exercise bike.
-                    await client.write_gatt_char(self.characteristic_uuid, READ)
+                    await self.client.write_gatt_char(self.characteristic_uuid, READ)
                     time.sleep(1)
 
-                await self.stop_session(client)
+                await self.stop_session()
         except bleak.BleakError as e:
             print(f"Bleak raised an exception: {e}")
 
-    async def initialize_session(self, client):
+    async def initialize_session(self):
         """Running the specific initialization protocol used to connect to the exercise bike."""
         # Activating notifications on the characteristic that is written to.
-        await client.start_notify(self.characteristic_uuid, self.notification_handler)
+        await self.client.start_notify(self.characteristic_uuid, self.notification_handler)
 
-        await client.write_gatt_char(self.characteristic_uuid, PING)
+        await self.client.write_gatt_char(self.characteristic_uuid, PING)
 
-        await client.write_gatt_char(self.characteristic_uuid, INIT_A0)
+        await self.client.write_gatt_char(self.characteristic_uuid, INIT_A0)
 
         for i in range(5):
-            await client.write_gatt_char(self.characteristic_uuid, PING)
+            await self.client.write_gatt_char(self.characteristic_uuid, PING)
 
-        await client.write_gatt_char(self.characteristic_uuid, INIT_A3)
+        await self.client.write_gatt_char(self.characteristic_uuid, INIT_A3)
 
-        await client.write_gatt_char(self.characteristic_uuid, INIT_A4)
+        await self.client.write_gatt_char(self.characteristic_uuid, INIT_A4)
 
-    async def set_level(self, client, level):
+    async def set_level(self, level):
         """Setting the resistance level for the workout session."""
         lvl = struct.pack('BBBBBB', 0xf0, 0xa6, 0x01, 0x01, level + 1, (0xf0 + 0xa6 + 3 + level) & 0xFF)
-        await client.write_gatt_char(self.characteristic_uuid, lvl)
+        await self.client.write_gatt_char(self.characteristic_uuid, lvl)
 
-    async def stop_session(self, client):
-        """Closing the bluetooth connect and starting the data postprocessing."""
+    async def stop_session(self):
+        """Closing the bluetooth connect and running the data postprocessing."""
         # Stopping the session on the bike itself and deactivating notifications on the characteristic.
-        await client.write_gatt_char(self.characteristic_uuid, STOP)
-        await client.stop_notify(self.characteristic_uuid)
+        await self.client.write_gatt_char(self.characteristic_uuid, STOP)
+        await self.client.stop_notify(self.characteristic_uuid)
 
         # Processing the entire workout session to extract further data.
         data_processing.process_workout_session(self.filename)
@@ -109,6 +111,12 @@ class BluetoothSession:
         """Handling the notifications that are received from a characteristic."""
         # If the data has a length of 21 we know it is a response from the READ write operation.
         if len(data) == 21:
-            # The process_read_response function returns True if the time in the data is equal to self.duration.
-            self.stop_flag = data_processing.process_read_response(data, self.filename, self.duration,
-                                                                   self.display_updater)
+            data = struct.unpack('BBBBBBBBBBBBBBBBBBBBB', data)
+
+            # Processing the data into a readable format, saving it to the given file and updating the live displays.
+            data_processing.process_read_response(data, self.filename, self.display_updater)
+
+            # Extracting the current time in minutes from the data to check if the session should be stopped.
+            current_time = ((data[3] - 1) * 60) + (data[4] - 1)
+            if current_time == self.duration:
+                self.stop_flag = True
