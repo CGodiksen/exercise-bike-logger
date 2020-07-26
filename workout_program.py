@@ -6,14 +6,9 @@ when to increase and decrease the resistance level to offer a more varied workou
 
 class WorkoutProgram:
     """
-    This class has two uses. It can return a list of x-coordinates and a list of y-coordinates for a given level, time
-    and program. These lists make it possible to accurately graph the workout program which is necessary in the
-    configure dialog window where we want to show each workout program as an option and in the live workout window where
-    we want to show the live progression over the program.
-
-    Furthermore the class makes it possible to get a dictionary where keys are timestamps describing when the resistance
-    level should be changed and the corresponding values are the new resistance level. These dictionaries can then be
-    used in the bluetooth session to change the resistance level correctly throughout the session.
+    This class provides two instance attributes that can be used to graph a specific workout program as well as give
+    information as to when the resistance level should be changed during the workout. When used in a graph the x-axis
+    should be "time" in minutes and the y-axis should be "level".
     """
     def __init__(self, level, duration, program):
         """
@@ -28,14 +23,10 @@ class WorkoutProgram:
         self.program = program
 
         # Initializing the x-coordinates as a sequence of numbers up to the given duration since the x-axis is "time".
-        self.x_coordinates = [i for i in range(1, duration + 1)]
+        self.x_coordinates = [i for i in range(0, duration)]
 
         # The y-coordinates are initialized based on the specific program since the y-axis is "level".
         self.y_coordinates = []
-
-        # This dictionary will contain a key-value pair for each time the resistance level should be changed where the
-        # key is when the change should happen and the corresponding value is the new level.
-        self.level_changes = {}
 
         # Calling the correct method based on the given program.
         getattr(self, program.replace(" ", "_"))()
@@ -46,26 +37,33 @@ class WorkoutProgram:
 
     def program_1(self):
         """
-        Setting the y-coordinates and level changes for program 1. This program slowly increases the resistance level
-        over the entire workout.
+        Setting the y-coordinates for program 1. This program slowly increases the resistance level
+        by a constant rate over the entire workout.
         """
+        # Example: level = 10, duration = 10, change_rate = 2, y_coordinates = [10, 10, 11, 11, 12, 12, 13, 13, 14, 14]
+        change_rate = round(self.duration / 5)
+        for minute in self.x_coordinates:
+            if minute % change_rate == 0:
+                self.level += 1
+            self.y_coordinates.append(self.level)
 
     def program_2(self):
         """
-        Setting the y-coordinates and level changes for program 2.
+        Setting the y-coordinates for program 2. This program increases the resistance level by a constant rate for the
+        first half of the session and then decreases the level back to the initial resistance by the same rate.
         """
 
     def program_3(self):
         """
-        Setting the y-coordinates and level changes for program 3.
+        Setting the y-coordinates for program 3.
         """
 
     def program_4(self):
         """
-        Setting the y-coordinates and level changes for program 4.
+        Setting the y-coordinates for program 4.
         """
 
     def program_5(self):
         """
-        Setting the y-coordinates and level changes for program 5.
+        Setting the y-coordinates for program 5.
         """
