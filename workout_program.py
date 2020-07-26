@@ -39,11 +39,12 @@ class WorkoutProgram:
         """
         Setting the y-coordinates for program 1. This program slowly increases the resistance level
         by a constant rate over the entire workout.
+
+        Example: level = 10, duration = 10, change_rate = 2, y_coordinates = [10, 10, 11, 11, 12, 12, 13, 13, 14, 14]
         """
-        # Example: level = 10, duration = 10, change_rate = 2, y_coordinates = [10, 10, 11, 11, 12, 12, 13, 13, 14, 14]
         change_rate = round(self.duration / 5)
         for minute in self.x_coordinates:
-            if minute % change_rate == 0:
+            if minute % change_rate == 0 and minute != 0:
                 self.level += 1
             self.y_coordinates.append(self.level)
 
@@ -51,7 +52,22 @@ class WorkoutProgram:
         """
         Setting the y-coordinates for program 2. This program increases the resistance level by a constant rate for the
         first half of the session and then decreases the level back to the initial resistance by the same rate.
+
+        Example: level = 10, duration = 10, change_rate = 1, y_coordinates = [10, 11, 12, 13, 14, 14, 13, 12, 11, 10]
         """
+        first_half = self.x_coordinates[:len(self.x_coordinates)//2]
+        second_half = self.x_coordinates[len(self.x_coordinates)//2:]
+        change_rate = round(len(second_half) / 5)
+
+        for minute in first_half:
+            if minute % change_rate == 0 and minute != 0:
+                self.level += 1
+            self.y_coordinates.append(self.level)
+
+        for minute in second_half:
+            if minute % change_rate == 0 and minute != second_half[0]:
+                self.level -= 1
+            self.y_coordinates.append(self.level)
 
     def program_3(self):
         """
