@@ -146,7 +146,7 @@
       <item row="4" column="1">
        <widget class="QSpinBox" name="levelSpinBox">
         <property name="value">
-         <number>10</number>
+         <number>13</number>
         </property>
        </widget>
       </item>
@@ -183,11 +183,6 @@
       </item>
       <item>
        <widget class="QComboBox" name="comboBox">
-        <item>
-         <property name="text">
-          <string>Constant</string>
-         </property>
-        </item>
         <item>
          <property name="text">
           <string>Program 1</string>
