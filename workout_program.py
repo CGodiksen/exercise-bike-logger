@@ -29,7 +29,34 @@ class WorkoutProgram:
         self.y_coordinates = []
 
         # Calling the correct method based on the given program.
-        getattr(self, program.replace(" ", "_"))()
+        getattr(self, program.replace(" ", "_").lower())()
+
+    def prettify_line(self):
+        """
+        Adding an extra coordinate for each level change to ensure a graphed line only has 90 degree bends.
+        This is done to accurately reflect how the resistance level changes from one level to another instantly when the
+        next minute mark is reached. Without this step it would look like the level changes over an entire minute.
+        Also adding an extra coordinate to the end to make a graphed line describe the entire workout.
+
+        Both these changes are purely for cosmetic reasons when graphing a line showing the workout program and are
+        therefore not needed when using the coordinates for changing the resistance level during the workout.
+
+        :return: A list of x coordinates and a list of y coordinates with the visually enhancing coordinates added.
+        """
+        x = self.x_coordinates.copy()
+        y = self.y_coordinates.copy()
+
+        changer_counter = 0
+        for i in range(1, len(self.y_coordinates)):
+            if self.y_coordinates[i - 1] != self.y_coordinates[i]:
+                x.insert(i + changer_counter, i)
+                y.insert(i + changer_counter, self.y_coordinates[i - 1])
+                changer_counter += 1
+
+        x.append(x[-1] + 1)
+        y.append(y[-1])
+
+        return x, y
 
     def program_1(self):
         """Setting the y-coordinates for program 1. This program keeps the level the same throughout."""
