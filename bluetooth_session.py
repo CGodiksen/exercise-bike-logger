@@ -27,29 +27,29 @@ class BluetoothSession:
     One BluetoothSession object represents one workout session.
     """
 
-    def __init__(self, characteristic_uuid, address, filename, initial_level, duration, display_updater):
+    def __init__(self, characteristic_uuid, address, filename, program, display_updater):
         """
         Method called when the Bluetooth object is initialized.
 
         :param characteristic_uuid: The characteristic that should be written to.
         :param address: The MAC address of the device that we want to connect with.
+        :param program: The workout program containing the level, duration and level changes of the workout.
         :param filename: The CSV file in which the data should be saved.
-        :param initial_level: The resistance level that is chosen for this specific workout.
-        :param duration: The total duration of the workout session in minutes.
         :param display_updater: The function that updates the display widgets on the live workout page. This is called
         every time the data from a READ write response is processed.
         """
         self.characteristic_uuid = characteristic_uuid
         self.address = address
+        self.program = program
         self.filename = filename
-        self.initial_level = initial_level
-        self.duration = duration
         self.display_updater = display_updater
 
         # Flag that is set to True when the workout session is complete.
         self.stop_flag = False
 
         self.client = None
+        self.current_minute = 0
+        self.current_level = self.program.level
 
     async def run_session(self):
         """
@@ -61,16 +61,28 @@ class BluetoothSession:
             async with bleak.BleakClient(self.address, loop=loop) as self.client:
                 await self.initialize_session()
 
-                await self.set_level(self.initial_level)
-                time.sleep(0.2)
+                await self.set_level(self.program.level)
+                time.sleep(0.5)
 
                 # Starting the workout session.
                 await self.client.write_gatt_char(self.characteristic_uuid, START)
-                time.sleep(0.2)
+                time.sleep(0.5)
 
                 while not self.stop_flag:
                     # Reading the current data from the exercise bike.
                     await self.client.write_gatt_char(self.characteristic_uuid, READ)
+
+                    # Stopping the session if the session is out of time.
+                    if self.current_minute == self.program.duration:
+                        self.stop_flag = True
+
+                    # Changing the resistance level if the chosen workout program specifies it.
+                    if self.current_minute < self.program.duration:
+                        new_level = self.program.y_coordinates[self.current_minute]
+                        if self.current_level != new_level:
+                            await self.set_level(new_level)
+                            self.current_level = new_level
+
                     time.sleep(1)
 
                 await self.stop_session()
@@ -113,10 +125,8 @@ class BluetoothSession:
         if len(data) == 21:
             data = struct.unpack('BBBBBBBBBBBBBBBBBBBBB', data)
 
+            # Extracting the current time in minutes from the data so it can be used to run certain checks.
+            self.current_minute = ((data[3] - 1) * 60) + (data[4] - 1)
+
             # Processing the data into a readable format, saving it to the given file and updating the live displays.
             data_processing.process_read_response(data, self.filename, self.display_updater)
-
-            # Extracting the current time in minutes from the data to check if the session should be stopped.
-            current_time = ((data[3] - 1) * 60) + (data[4] - 1)
-            if current_time == self.duration:
-                self.stop_flag = True

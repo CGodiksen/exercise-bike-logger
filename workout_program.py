@@ -22,6 +22,7 @@ class WorkoutProgram:
         self.duration = duration
         self.program = program
 
+        # TODO: Maybe change the name of these instance attributes.
         # Initializing the x-coordinates as a sequence of numbers up to the given duration since the x-axis is "time".
         self.x_coordinates = [i for i in range(0, duration)]
 

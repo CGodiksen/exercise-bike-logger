@@ -11,7 +11,12 @@ from settings_dialog import Settings
 
 # TODO: Make it so you can manually change levels during the workout.
 class WorkoutWindow(QtWidgets.QMainWindow):
-    def __init__(self, level, duration, *args, **kwargs):
+    def __init__(self, program, *args, **kwargs):
+        """
+        Method called when a live workout window is initialized.
+
+        :param program: The workout program containing the level, duration and level changes of the workout.
+        """
         super(WorkoutWindow, self).__init__(*args, **kwargs)
 
         # Load the UI Page.
@@ -19,8 +24,7 @@ class WorkoutWindow(QtWidgets.QMainWindow):
 
         self.session = None
 
-        self.level = level
-        self.duration = duration
+        self.program = program
 
         # Setting up multi threading.
         self.threadpool = QThreadPool()
@@ -42,7 +46,7 @@ class WorkoutWindow(QtWidgets.QMainWindow):
         loop = asyncio.get_event_loop()
 
         self.session = bluetooth_session.BluetoothSession(self.characteristic_uuid, self.address, filename,
-                                                          self.level, self.duration, self.update_live_page)
+                                                          self.program, self.update_live_page)
         worker = Worker(loop.run_until_complete, self.session.run_session())
         self.threadpool.start(worker)
 
