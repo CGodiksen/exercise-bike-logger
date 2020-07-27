@@ -1,25 +1,25 @@
 import csv
 import datetime
+import json
 import os
 import statistics
-import pickle
 from pathlib import Path
 
 
 class WorkoutSession:
     """
     This class describes a single workout session. Data from the exercise bike can be processed and saved. When the
-    session is done the data can be saved to a csv file and further information can be extracted and saved separately.
+    session is done the data can be saved to a file and further information can be extracted and saved separately.
     """
 
-    def __init__(self, workout_program, filename):
+    def __init__(self, program, filename):
         """
         Method called when a WorkoutSession instance is initialized.
 
-        :param workout_program: The workout program containing the level, duration and level changes of the workout.
+        :param program: The workout program containing the level, duration and level changes of the workout.
         :param filename: The CSV file in which the processed data should be saved.
         """
-        self.workout_program = workout_program
+        self.program = program
         self.filename = filename
 
         self.time = []
@@ -69,14 +69,14 @@ class WorkoutSession:
         """
         Processing the data from the workout session, extracting information about the data and saving it to the
         "workouts.csv" file containing a single row for each workout session. Since this method is called when the
-        session is over, we also pickle the object to save the data for later use.
+        session is over, we also serialize the object to a file to save the data for later use.
         """
         # Adding each element that should be in the row, starting with the date of the workout.
         new_row = [datetime.datetime.fromtimestamp(int(self.filename)).strftime('%d-%m-%Y %H:%M:%S')]
 
         # Adding the elements that can be extracted from the chosen workout program.
-        new_row.append(self.workout_program.program)
-        new_row.append(self.workout_program.level)
+        new_row.append(self.program.program_name)
+        new_row.append(self.program.level)
 
         # Adding the simple elements duration, distance and calories that are extracted by looking at single rows.
         new_row.append(self.time[-1])
@@ -106,9 +106,15 @@ class WorkoutSession:
 
             data_writer.writerow(new_row)
 
-        # Pickling the session to save it for later use.
-        with open(f"data/workouts/{self.filename}.obj", "wb") as objfile:
-            pickle.dump(self, objfile)
+        # Serializing the session to save it for later use.
+        with open(f"data/workouts/{self.filename}.json", "w+", encoding='utf-8') as jsonfile:
+            # Getting the instance as a dictionary and removing the attributes that we do not want to save.
+            session_dict = self.__dict__
+            del session_dict["program"]
+            del session_dict["filename"]
+
+            # Saving the remaining attributes to the json file.
+            json.dump(self.__dict__, jsonfile, ensure_ascii=False)
 
     @staticmethod
     def __create_storage_setup():

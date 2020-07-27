@@ -47,7 +47,7 @@ class BluetoothSession:
 
         self.client = None
         self.current_minute = 0
-        self.current_level = self.workout_session.workout_program.level
+        self.current_level = self.workout_session.program.level
 
     async def run_session(self):
         """
@@ -60,7 +60,7 @@ class BluetoothSession:
                 await self.initialize_session()
                 time.sleep(0.25)
 
-                await self.set_level(self.workout_session.workout_program.level)
+                await self.set_level(self.workout_session.program.level)
                 time.sleep(0.25)
 
                 # Starting the workout session.
@@ -72,12 +72,12 @@ class BluetoothSession:
                     await self.client.write_gatt_char(self.characteristic_uuid, READ)
 
                     # Stopping the session if the session is out of time.
-                    if self.current_minute == self.workout_session.workout_program.duration:
+                    if self.current_minute == self.workout_session.program.duration:
                         self.stop_flag = True
 
                     # Changing the resistance level if the chosen workout program specifies it.
-                    if self.current_minute < self.workout_session.workout_program.duration:
-                        new_level = self.workout_session.workout_program.y_coordinates[self.current_minute]
+                    if self.current_minute < self.workout_session.program.duration:
+                        new_level = self.workout_session.program.levels[self.current_minute]
                         if self.current_level != new_level:
                             await self.set_level(new_level)
                             self.current_level = new_level

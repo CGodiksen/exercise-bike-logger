@@ -10,27 +10,26 @@ class WorkoutProgram:
     information as to when the resistance level should be changed during the workout. When used in a graph the x-axis
     should be "time" in minutes and the y-axis should be "level".
     """
-    def __init__(self, level, duration, program):
+    def __init__(self, level, duration, program_name):
         """
         Method called when a WorkoutProgram object is initialized.
 
         :param level: The base intensity level of the workout.
         :param duration: The total duration of the workout in minutes.
-        :param program: The chosen workout program.
+        :param program_name: The chosen workout program.
         """
         self.level = level
         self.duration = duration
-        self.program = program
+        self.program_name = program_name
 
-        # TODO: Maybe change the name of these instance attributes.
         # Initializing the x-coordinates as a sequence of numbers up to the given duration since the x-axis is "time".
-        self.x_coordinates = [i for i in range(0, duration)]
+        self.minutes = [i for i in range(0, duration)]
 
-        # The y-coordinates are initialized based on the specific program since the y-axis is "level".
-        self.y_coordinates = []
+        # The y-coordinates are initialized based on the specific program.
+        self.levels = []
 
-        # Calling the correct method based on the given program.
-        getattr(self, program.replace(" ", "_").lower())()
+        # Calling the correct method based on the given program name.
+        getattr(self, self.program_name.replace(" ", "_").lower())()
 
     def prettify_line(self):
         """
@@ -44,14 +43,14 @@ class WorkoutProgram:
 
         :return: A list of x coordinates and a list of y coordinates with the visually enhancing coordinates added.
         """
-        x = self.x_coordinates.copy()
-        y = self.y_coordinates.copy()
+        x = self.minutes.copy()
+        y = self.levels.copy()
 
         changer_counter = 0
-        for i in range(1, len(self.y_coordinates)):
-            if self.y_coordinates[i - 1] != self.y_coordinates[i]:
+        for i in range(1, len(self.levels)):
+            if self.levels[i - 1] != self.levels[i]:
                 x.insert(i + changer_counter, i)
-                y.insert(i + changer_counter, self.y_coordinates[i - 1])
+                y.insert(i + changer_counter, self.levels[i - 1])
                 changer_counter += 1
 
         x.append(x[-1] + 1)
@@ -61,7 +60,7 @@ class WorkoutProgram:
 
     def program_1(self):
         """Setting the y-coordinates for program 1. This program keeps the level the same throughout."""
-        self.y_coordinates = [self.level for i in range(0, self.duration)]
+        self.levels = [self.level for i in range(0, self.duration)]
 
     def program_2(self):
         """
@@ -72,10 +71,10 @@ class WorkoutProgram:
         """
         level = self.level
         change_rate = round(self.duration / 5)
-        for minute in self.x_coordinates:
+        for minute in self.minutes:
             if minute % change_rate == 0 and minute != 0:
                 level += 1
-            self.y_coordinates.append(level)
+            self.levels.append(level)
 
     def program_3(self):
         """
@@ -85,19 +84,19 @@ class WorkoutProgram:
         Example: level = 10, duration = 10, change_rate = 1, y_coordinates = [10, 11, 12, 13, 14, 14, 13, 12, 11, 10]
         """
         level = self.level
-        first_half = self.x_coordinates[:len(self.x_coordinates)//2]
-        second_half = self.x_coordinates[len(self.x_coordinates)//2:]
+        first_half = self.minutes[:len(self.minutes) // 2]
+        second_half = self.minutes[len(self.minutes) // 2:]
         change_rate = round(len(second_half) / 5)
 
         for minute in first_half:
             if minute % change_rate == 0 and minute != 0:
                 level += 1
-            self.y_coordinates.append(level)
+            self.levels.append(level)
 
         for minute in second_half:
             if minute % change_rate == 0 and minute != second_half[0]:
                 level -= 1
-            self.y_coordinates.append(level)
+            self.levels.append(level)
 
     def program_4(self):
         """
@@ -107,14 +106,14 @@ class WorkoutProgram:
         Example: level = 10, duration = 10, y_coordinates = [10, 10, 12, 12, 14, 10, 10, 12, 12, 14]
         """
         level = self.level
-        for minute in self.x_coordinates:
+        for minute in self.minutes:
             if minute % 5 == 0:
                 level = self.level
             if minute % 5 == 2:
                 level += 2
             if minute % 5 == 4:
                 level += 2
-            self.y_coordinates.append(level)
+            self.levels.append(level)
 
     def program_5(self):
         """
@@ -123,11 +122,11 @@ class WorkoutProgram:
 
         Example: level = 10, duration = 10, y_coordinates = [10, 11, 12, 12, 12, 12, 12, 12, 11, 10]
         """
-        self.y_coordinates.append(self.level)
-        self.y_coordinates.append(self.level + 1)
+        self.levels.append(self.level)
+        self.levels.append(self.level + 1)
 
-        for _ in self.x_coordinates[2:-2]:
-            self.y_coordinates.append(self.level + 2)
+        for _ in self.minutes[2:-2]:
+            self.levels.append(self.level + 2)
 
-        self.y_coordinates.append(self.level + 1)
-        self.y_coordinates.append(self.level)
+        self.levels.append(self.level + 1)
+        self.levels.append(self.level)

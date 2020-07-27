@@ -60,6 +60,7 @@ class WorkoutWindow(QtWidgets.QMainWindow):
         worker = Worker(loop.run_until_complete, self.session.run_session())
         self.threadpool.start(worker)
 
+    # TODO: Make it so we dont save the data from the exercise if this button is pressed.
     def stop_workout(self):
         """Stopping the workout by setting the internal stop flag to True."""
         self.session.stop_flag = True
@@ -96,6 +97,6 @@ class WorkoutWindow(QtWidgets.QMainWindow):
         """
         # Highlighting the current section if the workout is underway.
         if current_minute < self.program.duration:
-            x_highlight = [self.program.x_coordinates[current_minute]]
-            y_highlight = [self.program.y_coordinates[current_minute]]
+            x_highlight = [current_minute]
+            y_highlight = [self.program.levels[current_minute]]
             self.highlight_point.setData(x_highlight, y_highlight)
