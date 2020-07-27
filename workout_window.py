@@ -8,6 +8,7 @@ from PyQt5.QtCore import QThreadPool
 import bluetooth_session
 from worker import Worker
 from settings_dialog import Settings
+from workout_session import WorkoutSession
 
 
 class WorkoutWindow(QtWidgets.QMainWindow):
@@ -52,8 +53,10 @@ class WorkoutWindow(QtWidgets.QMainWindow):
 
         loop = asyncio.get_event_loop()
 
-        self.session = bluetooth_session.BluetoothSession(self.characteristic_uuid, self.address, filename,
-                                                          self.program, self.update_live_page)
+        workout_session = WorkoutSession(self.program, filename)
+        self.session = bluetooth_session.BluetoothSession(self.characteristic_uuid, self.address,
+                                                          workout_session, self.update_live_page)
+
         worker = Worker(loop.run_until_complete, self.session.run_session())
         self.threadpool.start(worker)
 
@@ -61,23 +64,29 @@ class WorkoutWindow(QtWidgets.QMainWindow):
         """Stopping the workout by setting the internal stop flag to True."""
         self.session.stop_flag = True
 
-    def update_live_page(self, data):
+    def update_live_page(self, timestamp, speed, rpm, distance, calories, heart_rate, watt):
         """
         Updating the display widgets on the live workout page with the newest data every second. This method is called
         every time we process a new data response from the exercise bike to ensure the newest data is displayed.
 
-        :param data: The data that should be used to update the display widgets.
+        :param timestamp: The current time in the format HH:MM:SS.
+        :param speed: The current speed in km/h.
+        :param rpm: The current RPM.
+        :param distance: The current distance in km.
+        :param calories: The current calories.
+        :param heart_rate: The current heart rate.
+        :param watt: The current power in watt.
         """
-        self.timeLabel.setText(data[0])
-        self.speedNumber.display(data[1])
-        self.rpmNumber.display(data[2])
-        self.distanceNumber.display(data[3])
-        self.caloriesNumber.display(data[4])
-        self.heartRateNumber.display(data[5])
-        self.wattNumber.display(data[6])
+        self.timeLabel.setText(timestamp)
+        self.speedNumber.display(speed)
+        self.rpmNumber.display(rpm)
+        self.distanceNumber.display(distance)
+        self.caloriesNumber.display(calories)
+        self.heartRateNumber.display(heart_rate)
+        self.wattNumber.display(watt)
 
         # Extracting the minutes from the timestamp and using it to plot the live progression of the program.
-        self.update_highlight_point(int(data[0][3:-3]))
+        self.update_highlight_point(int(timestamp[3:-3]))
 
     def update_highlight_point(self, current_minute):
         """

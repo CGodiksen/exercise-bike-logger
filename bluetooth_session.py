@@ -3,7 +3,6 @@ import time
 import asyncio
 
 import bleak
-import data_processing
 
 # Defining the data that can be written to the characteristic.
 INIT_A0 = struct.pack('BBBBB', 0xf0, 0xa0, 0x02, 0x02, 0x94)
@@ -27,21 +26,20 @@ class BluetoothSession:
     One BluetoothSession object represents one workout session.
     """
 
-    def __init__(self, characteristic_uuid, address, filename, program, display_updater):
+    def __init__(self, characteristic_uuid, address, workout_session, display_updater):
         """
         Method called when the Bluetooth object is initialized.
 
         :param characteristic_uuid: The characteristic that should be written to.
         :param address: The MAC address of the device that we want to connect with.
-        :param program: The workout program containing the level, duration and level changes of the workout.
-        :param filename: The CSV file in which the data should be saved.
+        :param workout_session: The workout session instance which will contain all data from the session. This instance
+        also contains information about the chosen level, duration and program for the session.
         :param display_updater: The function that updates the display widgets on the live workout page. This is called
         every time the data from a READ write response is processed.
         """
         self.characteristic_uuid = characteristic_uuid
         self.address = address
-        self.program = program
-        self.filename = filename
+        self.workout_session = workout_session
         self.display_updater = display_updater
 
         # Flag that is set to True when the workout session is complete.
@@ -49,7 +47,7 @@ class BluetoothSession:
 
         self.client = None
         self.current_minute = 0
-        self.current_level = self.program.level
+        self.current_level = self.workout_session.workout_program.level
 
     async def run_session(self):
         """
@@ -60,25 +58,26 @@ class BluetoothSession:
             loop = asyncio.get_event_loop()
             async with bleak.BleakClient(self.address, loop=loop) as self.client:
                 await self.initialize_session()
+                time.sleep(0.25)
 
-                await self.set_level(self.program.level)
-                time.sleep(0.5)
+                await self.set_level(self.workout_session.workout_program.level)
+                time.sleep(0.25)
 
                 # Starting the workout session.
                 await self.client.write_gatt_char(self.characteristic_uuid, START)
-                time.sleep(0.5)
+                time.sleep(0.25)
 
                 while not self.stop_flag:
                     # Reading the current data from the exercise bike.
                     await self.client.write_gatt_char(self.characteristic_uuid, READ)
 
                     # Stopping the session if the session is out of time.
-                    if self.current_minute == self.program.duration:
+                    if self.current_minute == self.workout_session.workout_program.duration:
                         self.stop_flag = True
 
                     # Changing the resistance level if the chosen workout program specifies it.
-                    if self.current_minute < self.program.duration:
-                        new_level = self.program.y_coordinates[self.current_minute]
+                    if self.current_minute < self.workout_session.workout_program.duration:
+                        new_level = self.workout_session.workout_program.y_coordinates[self.current_minute]
                         if self.current_level != new_level:
                             await self.set_level(new_level)
                             self.current_level = new_level
@@ -117,7 +116,7 @@ class BluetoothSession:
         await self.client.stop_notify(self.characteristic_uuid)
 
         # Processing the entire workout session to extract further data.
-        data_processing.process_workout_session(self.filename)
+        self.workout_session.process_workout_session()
 
     def notification_handler(self, sender, data):
         """Handling the notifications that are received from a characteristic."""
@@ -128,5 +127,5 @@ class BluetoothSession:
             # Extracting the current time in minutes from the data so it can be used to run certain checks.
             self.current_minute = ((data[3] - 1) * 60) + (data[4] - 1)
 
-            # Processing the data into a readable format, saving it to the given file and updating the live displays.
-            data_processing.process_read_response(data, self.filename, self.display_updater)
+            # Processing the data, saving it to the workout session instance and updating the live displays.
+            self.workout_session.process_read_response(data, self.display_updater)
