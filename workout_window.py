@@ -1,5 +1,6 @@
 import asyncio
 import time
+import pyqtgraph as pg
 
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import QThreadPool
@@ -9,7 +10,6 @@ from worker import Worker
 from settings_dialog import Settings
 
 
-# TODO: Make it so you can manually change levels during the workout.
 class WorkoutWindow(QtWidgets.QMainWindow):
     def __init__(self, program, *args, **kwargs):
         """
@@ -25,6 +25,13 @@ class WorkoutWindow(QtWidgets.QMainWindow):
         self.session = None
 
         self.program = program
+
+        # Performing cosmetic changes to the coordinate lists to make the visualization clearer and plotting them.
+        x, y = self.program.prettify_line()
+        self.graphWidget.plot(x, y, pen=pg.mkPen(color="#4b6bc8"))
+
+        # Initializing the point that highlights where the user currently is in the workout program.
+        self.highlight_point = self.graphWidget.plot([0], [self.program.level], symbol="o", symbolSize=13)
 
         # Setting up multi threading.
         self.threadpool = QThreadPool()
@@ -68,4 +75,18 @@ class WorkoutWindow(QtWidgets.QMainWindow):
         self.caloriesNumber.display(data[4])
         self.heartRateNumber.display(data[5])
         self.wattNumber.display(data[6])
-        self.levelSpinBox.setValue(int(data[7]))
+
+        # Extracting the minutes from the timestamp and using it to plot the live progression of the program.
+        self.update_highlight_point(int(data[0][3:-3]))
+
+    def update_highlight_point(self, current_minute):
+        """
+        Updating the point that highlights the specific section of the program where the user currently is.
+
+        :param current_minute: The current time in minutes.
+        """
+        # Highlighting the current section if the workout is underway.
+        if current_minute < self.program.duration:
+            x_highlight = [self.program.x_coordinates[current_minute]]
+            y_highlight = [self.program.y_coordinates[current_minute]]
+            self.highlight_point.setData(x_highlight, y_highlight)
