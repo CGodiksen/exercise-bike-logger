@@ -58,14 +58,14 @@ class BluetoothSession:
             loop = asyncio.get_event_loop()
             async with bleak.BleakClient(self.address, loop=loop) as self.client:
                 await self.initialize_session()
-                time.sleep(0.25)
+                time.sleep(1)
 
                 await self.set_level(self.workout_session.program.level)
-                time.sleep(0.25)
+                time.sleep(1)
 
                 # Starting the workout session.
                 await self.client.write_gatt_char(self.characteristic_uuid, START)
-                time.sleep(0.25)
+                time.sleep(1)
 
                 while not self.stop_flag:
                     # Reading the current data from the exercise bike.

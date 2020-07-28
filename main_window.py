@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, uic
 
+from workout_list_model import WorkoutListModel
 from settings_dialog import SettingsDialog
 from configure_dialog import ConfigureDialog
 
@@ -10,6 +11,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Load the UI Page.
         uic.loadUi("resources/mainwindow.ui", self)
+
+        # Setting up the model that handles the workout list view.
+        self.model = WorkoutListModel()
+        self.model.load_workouts()
+        self.workoutListView.setModel(self.model)
 
         # Connecting the buttons with their respective functionality.
         self.configure_dialog = ConfigureDialog()

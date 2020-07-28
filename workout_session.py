@@ -71,8 +71,8 @@ class WorkoutSession:
         "workouts.csv" file containing a single row for each workout session. Since this method is called when the
         session is over, we also serialize the object to a file to save the data for later use.
         """
-        # Adding each element that should be in the row, starting with the date of the workout.
-        new_row = [datetime.datetime.fromtimestamp(int(self.filename)).strftime('%d-%m-%Y %H:%M:%S')]
+        # Adding each element that should be in the row, starting with the Epoch time of the workout.
+        new_row = [self.filename]
 
         # Adding the elements that can be extracted from the chosen workout program.
         new_row.append(self.program.program_name)
