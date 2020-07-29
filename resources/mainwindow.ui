@@ -30,16 +30,6 @@
      <attribute name="title">
       <string>Workout history</string>
      </attribute>
-     <widget class="QListView" name="workoutListView">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>0</y>
-        <width>341</width>
-        <height>561</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QWidget" name="gridLayoutWidget">
       <property name="geometry">
        <rect>
@@ -663,7 +653,7 @@
         </widget>
        </item>
        <item row="1" column="1" colspan="4">
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="dateLabel">
          <property name="font">
           <font>
            <pointsize>18</pointsize>
@@ -677,7 +667,7 @@
         </widget>
        </item>
        <item row="6" column="1" colspan="4">
-        <widget class="QWidget" name="workoutGraphWidget" native="true">
+        <widget class="PlotWidget" name="workoutGraphWidget" native="true">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -741,7 +731,7 @@
         </widget>
        </item>
        <item row="5" column="1">
-        <widget class="QLabel" name="label_15">
+        <widget class="QLabel" name="programLabel">
          <property name="font">
           <font>
            <pointsize>12</pointsize>
@@ -753,11 +743,28 @@
           <string>Program</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
       </layout>
+     </widget>
+     <widget class="QListView" name="workoutListView">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>351</width>
+        <height>561</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="statisticsPage">
@@ -2073,8 +2080,14 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources>
-  <include location="images.qrc"/>
- </resources>
+ <customwidgets>
+  <customwidget>
+   <class>PlotWidget</class>
+   <extends>QWidget</extends>
+   <header>pyqtgraph.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
  <connections/>
 </ui>

@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, uic
 
 from workout_list_model import WorkoutListModel
+from workout_history_tab import WorkoutHistoryTab
 from settings_dialog import SettingsDialog
 from configure_dialog import ConfigureDialog
 
@@ -16,6 +17,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.model = WorkoutListModel()
         self.model.load_workouts()
         self.workoutListView.setModel(self.model)
+
+        # Setting up the workout history tab.
+        self.workout_history_tab = WorkoutHistoryTab(self)
 
         # Connecting the buttons with their respective functionality.
         self.configure_dialog = ConfigureDialog()
