@@ -1,7 +1,7 @@
 import csv
 import datetime
 
-from PyQt5 import QtCore, QtGui
+from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 
 
@@ -26,7 +26,7 @@ class WorkoutListModel(QtCore.QAbstractListModel):
         distance = self.workouts[QModelIndex.row()][4]
 
         if role == Qt.DisplayRole:
-            return f"{date} - {program} - Level {level}\nDuration: {time} - Distance: {distance}"
+            return f"{date} - {program} - Level {level}\nDuration: {time} - Distance: {distance} km"
 
     def rowCount(self, parent=None, *args, **kwargs):
         """
@@ -45,3 +45,6 @@ class WorkoutListModel(QtCore.QAbstractListModel):
 
             for row in workout_reader:
                 self.workouts.append(row)
+
+            # Reversing the list so the most recent workout is first.
+            self.workouts.reverse()
