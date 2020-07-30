@@ -1,5 +1,4 @@
 import csv
-import datetime
 import json
 import os
 import statistics
@@ -47,19 +46,19 @@ class WorkoutSession:
         # Adding each element of data from the READ response to the corresponding instance attributes.
         self.time.append(f"{data[3]:02d}:{data[4]:02d}:{data[5]:02d}")
 
-        self.speed.append(f"{((100 * (data[6]) + data[7]) / 10.0):3.1f}")
+        self.speed.append(round(((100 * (data[6]) + data[7]) / 10.0), 1))
 
-        self.rpm.append(f"{(100 * (data[8]) + data[9])}")
+        self.rpm.append((100 * (data[8]) + data[9]))
 
-        self.distance.append(f"{((100 * (data[10]) + data[11]) / 10.0):3.1f}")
+        self.distance.append(round(((100 * (data[10]) + data[11]) / 10.0), 1))
 
-        self.calories.append(f"{(100 * (data[12]) + data[13])}")
+        self.calories.append((100 * (data[12]) + data[13]))
 
-        self.heart_rate.append(f"{(100 * (data[14]) + data[15])}")
+        self.heart_rate.append((100 * (data[14]) + data[15]))
 
-        self.watt.append(f"{((100 * (data[16]) + data[17]) / 10.0):3.1f}")
+        self.watt.append(round(((100 * (data[16]) + data[17]) / 10.0), 1))
 
-        self.level.append(f"{data[18]}")
+        self.level.append(data[18])
 
         # Updating the display widgets on the live workout page.
         display_updater(self.time[-1], self.speed[-1], self.rpm[-1], self.distance[-1], self.calories[-1],
@@ -84,16 +83,16 @@ class WorkoutSession:
         new_row.append(self.calories[-1])
 
         # Adding average speed, average rpm, average heart rate and average watt rounded to two decimals.
-        new_row.append(round(statistics.mean(list(map(float, self.speed))), 2))
-        new_row.append(round(statistics.mean(list(map(int, self.rpm))), 2))
-        new_row.append(round(statistics.mean(list(map(int, self.heart_rate))), 2))
-        new_row.append(round(statistics.mean(list(map(float, self.watt))), 2))
+        new_row.append(round(statistics.mean(self.speed), 2))
+        new_row.append(round(statistics.mean(self.rpm), 2))
+        new_row.append(round(statistics.mean(self.heart_rate), 2))
+        new_row.append(round(statistics.mean( self.watt), 2))
 
         # Adding max speed, max rpm, max heart rate and max watt.
-        new_row.append(max(list(map(float, self.speed))))
-        new_row.append(max(list(map(int, self.rpm))))
-        new_row.append(max(list(map(int, self.heart_rate))))
-        new_row.append(max(list(map(float, self.watt))))
+        new_row.append(max(self.speed))
+        new_row.append(max(self.rpm))
+        new_row.append(max(self.heart_rate))
+        new_row.append(max(self.watt))
 
         with open(f"data/workouts.csv", "a+", newline="") as csvfile:
             data_writer = csv.writer(csvfile)
