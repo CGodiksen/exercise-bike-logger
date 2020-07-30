@@ -5,6 +5,7 @@ from datetime import datetime
 from PyQt5.QtCore import QPoint
 
 
+# TODO: Make it so the workout history is updated automatically when a new workout is done.
 class WorkoutHistoryTab:
     def __init__(self, main_window):
         self.main_window = main_window
@@ -14,6 +15,9 @@ class WorkoutHistoryTab:
 
         # Selecting the most recent workout initially.
         self.main_window.workoutListView.setCurrentIndex(self.main_window.workoutListView.indexAt(QPoint(0, 0)))
+
+        # Updating the graph when the graph combo box is changed.
+        self.main_window.graphComboBox.currentIndexChanged.connect(self.update_graph)
 
     def update_display(self):
         """Updates the display on the workout history tab with the data from the currently selected item."""
@@ -39,56 +43,55 @@ class WorkoutHistoryTab:
             self.main_window.maxHeartRateLabel.setText(workout[12])
             self.main_window.maxWattLabel.setText(workout[13])
 
-            self.update_graph(workout[0])
+            self.update_graph()
 
-    def update_graph(self, filename):
-        """
-        Updating the graph with data from the given filename.
+    def update_graph(self):
+        """Updating the graph with data from the current configuration."""
+        # Retrieving the filename of the file containing the full data from the currently selected workout.
+        filename = self.main_window.model.workouts[self.main_window.workoutListView.selectedIndexes()[0].row()][0]
 
-        :param filename: The Epoch time which uniquely identifies the specific file that we should pull the data from.
-        """
+        # Getting the specific data that should be plotted from the graph combo box.
+        data_name = self.main_window.graphComboBox.currentText()
+
         # Getting the data from the specified file.
         with open(f"data/workouts/{filename}.json", "r") as jsonfile:
             data = json.load(jsonfile)
 
-        # Converting the timestamps into seconds and using them as the x-coordinate.
+        # Converting the timestamps into minutes and using them as the x-coordinate.
         x = self.convert_timestamps(data["time"])
 
-        # Initializing the y-coordinates of the 5 different lines.
-        y_speed = [float(i) for i in data["speed"]]
-        y_rpm = [int(i) for i in data["rpm"]]
-        y_heart_rate = [int(i) for i in data["heart_rate"]]
-        y_watt = [float(i) for i in data["watt"]]
-        y_level = [int(i) for i in data["level"]]
+        # Initializing the y-coordinates.
+        y = data[data_name.lower().replace(" ", "_")]
 
         self.main_window.workoutGraphWidget.clear()
 
-        self.main_window.workoutGraphWidget.addLegend()
+        # Choosing the color of the line based on the index of the combo box to ensure each line is unique.
+        colors = ["#4b6bc8", "#FFFF00", "#CD0000", "#008000", "#800080", "#FFA500", "#00FFD2"]
+        line_color = colors[self.main_window.graphComboBox.currentIndex()]
 
-        # Plotting the lines in the graph.
-        self.main_window.workoutGraphWidget.plot(x, y_speed, pen=pg.mkPen(color="#4b6bc8", width=2), name="Speed")
-        self.main_window.workoutGraphWidget.plot(x, y_rpm, pen=pg.mkPen(color="#CD0000", width=2), name="RPM")
-        self.main_window.workoutGraphWidget.plot(x, y_heart_rate, pen=pg.mkPen(color="#FFFF00", width=2),
-                                                 name="Heart rate")
-        self.main_window.workoutGraphWidget.plot(x, y_watt, pen=pg.mkPen(color="#008000", width=2), name="Watt")
-        self.main_window.workoutGraphWidget.plot(x, y_level, pen=pg.mkPen(color="#800080", width=2), name="Level")
+        # Plotting the content in the graph, including the line and label names.
+        self.main_window.workoutGraphWidget.plot(x, y, pen=pg.mkPen(color=line_color, width=2), name=data_name)
+
+        label_style = {'color': '#808080', 'font-size': '14pt'}
+        self.main_window.workoutGraphWidget.setLabel("bottom", "Minutes", **label_style)
+        self.main_window.workoutGraphWidget.setLabel("left", data_name, **label_style)
 
     @staticmethod
     def convert_timestamps(timestamps):
         """
-        Converts a list of timestamps into a list of seconds so it can be used as the x-coordinates in a graph.
+        Converts a list of timestamps into a list of minutes so it can be used as the x-coordinates in a graph.
 
         :param timestamps: A list of timestamps where each timestamp has the format "HH:MM:SS".
         """
-        seconds = []
+        minutes = []
         for timestamp in timestamps:
-            # Adding the seconds from the timestamp.
-            time_seconds = int(timestamp[6:])
-            # Adding the minutes from the timestamp in seconds.
-            time_seconds += int(timestamp[3:5]) * 60
-            # Adding the hours from the timestamp in seconds.
-            time_seconds += int(timestamp[:2]) * 3600
+            # Adding the seconds from the timestamp in minutes.
+            time_minutes = int(timestamp[6:]) / 60
+            # Adding the minutes from the timestamp.
+            time_minutes += int(timestamp[3:5])
+            # Adding the hours from the timestamp in minutes.
+            time_minutes += int(timestamp[:2]) * 60
 
-            seconds.append(time_seconds)
+            minutes.append(time_minutes)
 
-        return seconds
+        return minutes
