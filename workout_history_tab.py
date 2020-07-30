@@ -28,27 +28,28 @@ class WorkoutHistoryTab:
             workout = self.main_window.model.workouts[index.row()]
 
             # Setting the labels of the display to the corresponding data from the workout.
-            self.main_window.dateLabel.setText(datetime.fromtimestamp(int(workout[0])).strftime('%d-%m-%Y %H:%M:%S'))
-            self.main_window.programLabel.setText(workout[1])
-            self.main_window.levelLabel.setText(workout[2])
-            self.main_window.timeLabel.setText(workout[3])
-            self.main_window.distanceLabel.setText(workout[4])
-            self.main_window.caloriesLabel.setText(workout[5])
-            self.main_window.avgSpeedLabel.setText(workout[6])
-            self.main_window.avgRPMLabel.setText(workout[7])
-            self.main_window.avgHeartRateLabel.setText(workout[8])
-            self.main_window.avgWattLabel.setText(workout[9])
-            self.main_window.maxSpeedLabel.setText(workout[10])
-            self.main_window.maxRPMLabel.setText(workout[11])
-            self.main_window.maxHeartRateLabel.setText(workout[12])
-            self.main_window.maxWattLabel.setText(workout[13])
+            date = datetime.fromtimestamp(int(workout["date"])).strftime('%d-%m-%Y %H:%M:%S')
+            self.main_window.dateLabel.setText(date)
+            self.main_window.programLabel.setText(workout["program"])
+            self.main_window.levelLabel.setText(workout["level"])
+            self.main_window.timeLabel.setText(workout["duration"])
+            self.main_window.distanceLabel.setText(workout["distance"])
+            self.main_window.caloriesLabel.setText(workout["calories"])
+            self.main_window.avgSpeedLabel.setText(workout["avg_speed"])
+            self.main_window.avgRPMLabel.setText(workout["avg_rpm"])
+            self.main_window.avgHeartRateLabel.setText(workout["avg_heart_rate"])
+            self.main_window.avgWattLabel.setText(workout["avg_watt"])
+            self.main_window.maxSpeedLabel.setText(workout["max_speed"])
+            self.main_window.maxRPMLabel.setText(workout["max_rpm"])
+            self.main_window.maxHeartRateLabel.setText(workout["max_heart_rate"])
+            self.main_window.maxWattLabel.setText(workout["max_watt"])
 
             self.update_graph()
 
     def update_graph(self):
         """Updating the graph with data from the current configuration."""
         # Retrieving the filename of the file containing the full data from the currently selected workout.
-        filename = self.main_window.model.workouts[self.main_window.workoutListView.selectedIndexes()[0].row()][0]
+        filename = self.main_window.model.workouts[self.main_window.workoutListView.selectedIndexes()[0].row()]["date"]
 
         # Getting the specific data that should be plotted from the graph combo box.
         data_name = self.main_window.graphComboBox.currentText()

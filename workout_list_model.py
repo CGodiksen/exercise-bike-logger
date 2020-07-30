@@ -1,5 +1,5 @@
 import csv
-import datetime
+from datetime import datetime
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
@@ -9,6 +9,7 @@ class WorkoutListModel(QtCore.QAbstractListModel):
     def __init__(self):
         super(WorkoutListModel, self).__init__()
 
+        # The list that will contain a dictionary for each workout with a key-value pair for each column.
         self.workouts = []
 
     def data(self, QModelIndex, role=None):
@@ -19,14 +20,14 @@ class WorkoutListModel(QtCore.QAbstractListModel):
         :param role: The specific data that we wish to extract.
         :return: The name of the subreddit if the role is DisplayRole.
         """
-        date = datetime.datetime.fromtimestamp(int(self.workouts[QModelIndex.row()][0])).strftime('%d-%m-%Y %H:%M:%S')
-        program = self.workouts[QModelIndex.row()][1]
-        level = self.workouts[QModelIndex.row()][2]
-        time = self.workouts[QModelIndex.row()][3]
-        distance = self.workouts[QModelIndex.row()][4]
+        date = datetime.fromtimestamp(int(self.workouts[QModelIndex.row()]["date"])).strftime('%d-%m-%Y %H:%M:%S')
+        program = self.workouts[QModelIndex.row()]["program"]
+        level = self.workouts[QModelIndex.row()]["level"]
+        duration = self.workouts[QModelIndex.row()]["duration"]
+        distance = self.workouts[QModelIndex.row()]["distance"]
 
         if role == Qt.DisplayRole:
-            return f"{date} - {program} - Level {level}\nDuration: {time} - Distance: {distance} km"
+            return f"{date} - {program} - Level {level}\nDuration: {duration} - Distance: {distance} km"
 
     def rowCount(self, parent=None, *args, **kwargs):
         """
@@ -38,10 +39,7 @@ class WorkoutListModel(QtCore.QAbstractListModel):
     def load_workouts(self):
         """Loading the workouts from the workouts.csv file into the internal model."""
         with open("data/workouts.csv", "r") as csvfile:
-            workout_reader = csv.reader(csvfile)
-
-            # Skipping the header.
-            next(workout_reader, None)
+            workout_reader = csv.DictReader(csvfile)
 
             for row in workout_reader:
                 self.workouts.append(row)

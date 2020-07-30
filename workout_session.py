@@ -94,7 +94,7 @@ class WorkoutSession:
         new_row.append(max(self.heart_rate))
         new_row.append(max(self.watt))
 
-        with open(f"data/workouts.csv", "a+", newline="") as csvfile:
+        with open("data/workouts.csv", "a+", newline="") as csvfile:
             data_writer = csv.writer(csvfile)
 
             # If the file is empty then we start by adding a header.
