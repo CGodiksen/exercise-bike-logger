@@ -59,7 +59,7 @@ class WorkoutHistoryTab:
             data = json.load(jsonfile)
 
         # Converting the timestamps into minutes and using them as the x-coordinate.
-        x = self.convert_timestamps(data["time"])
+        x = [seconds / 60 for seconds in self.main_window.timestamps_to_seconds(data["time"])]
 
         # Initializing the y-coordinates.
         y = data[data_name.lower().replace(" ", "_")]
@@ -76,23 +76,3 @@ class WorkoutHistoryTab:
         label_style = {'color': '#808080', 'font-size': '14pt'}
         self.main_window.workoutGraphWidget.setLabel("bottom", "Minutes", **label_style)
         self.main_window.workoutGraphWidget.setLabel("left", data_name, **label_style)
-
-    @staticmethod
-    def convert_timestamps(timestamps):
-        """
-        Converts a list of timestamps into a list of minutes so it can be used as the x-coordinates in a graph.
-
-        :param timestamps: A list of timestamps where each timestamp has the format "HH:MM:SS".
-        """
-        minutes = []
-        for timestamp in timestamps:
-            # Adding the seconds from the timestamp in minutes.
-            time_minutes = int(timestamp[6:]) / 60
-            # Adding the minutes from the timestamp.
-            time_minutes += int(timestamp[3:5])
-            # Adding the hours from the timestamp in minutes.
-            time_minutes += int(timestamp[:2]) * 60
-
-            minutes.append(time_minutes)
-
-        return minutes
