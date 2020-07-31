@@ -17,19 +17,19 @@ class StatisticsTab:
         """Updates the labels in the statistics tab."""
         self.main_window.totalWorkoutsLabel.setText(self.statistics["total_workouts"])
         self.main_window.totalTimeLabel.setText(self.statistics["total_time"])
-        self.main_window.totalDistanceLabel.setText(self.statistics["total_distance"])
+        self.main_window.totalDistanceLabel.setText(f"{self.statistics['total_distance']} km")
         self.main_window.totalCaloriesLabel.setText(self.statistics["total_calories"])
 
         self.main_window.longestWorkoutLabel.setText(self.statistics["longest_workout"][0])
         self.main_window.longestWorkoutDateLabel.setText(self.statistics["longest_workout"][1])
 
-        self.main_window.longestDistanceLabel.setText(self.statistics["longest_distance"][0])
+        self.main_window.longestDistanceLabel.setText(f"{self.statistics['longest_distance'][0]} km")
         self.main_window.longestDistanceDateLabel.setText(self.statistics["longest_distance"][1])
 
         self.main_window.mostCaloriesBurnedLabel.setText(self.statistics["most_calories_burned"][0])
         self.main_window.mostCaloriesBurnedDateLabel.setText(self.statistics["most_calories_burned"][1])
 
-        self.main_window.highAvgSpeedLabel.setText(self.statistics["highest_average_speed"][0])
+        self.main_window.highAvgSpeedLabel.setText(f"{self.statistics['highest_average_speed'][0]} km/h")
         self.main_window.highAvgSpeedDateLabel.setText(self.statistics["highest_average_speed"][1])
 
         self.main_window.highAvgRPMLabel.setText(self.statistics["highest_average_rpm"][0])
@@ -41,7 +41,7 @@ class StatisticsTab:
         self.main_window.highAvgWattLabel.setText(self.statistics["highest_average_watt"][0])
         self.main_window.highAvgWattDateLabel.setText(self.statistics["highest_average_watt"][1])
 
-        self.main_window.highSpeedLabel.setText(self.statistics["highest_speed"][0])
+        self.main_window.highSpeedLabel.setText(f"{self.statistics['highest_speed'][0]} km/h")
         self.main_window.highSpeedDateLabel.setText(self.statistics["highest_speed"][1])
 
         self.main_window.highRPMLabel.setText(self.statistics["highest_rpm"][0])
