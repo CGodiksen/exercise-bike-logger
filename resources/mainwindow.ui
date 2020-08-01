@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="workoutHistoryPage">
      <attribute name="title">
@@ -1996,7 +1996,7 @@
              </item>
              <item>
               <property name="text">
-               <string>TIme</string>
+               <string>Time</string>
               </property>
              </item>
              <item>
