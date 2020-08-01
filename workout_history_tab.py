@@ -15,7 +15,7 @@ class WorkoutHistoryTab:
         self.main_window.workoutListView.setCurrentIndex(self.main_window.workoutListView.indexAt(QPoint(0, 0)))
 
         # Updating the graph when the graph combo box is changed.
-        self.main_window.graphComboBox.currentIndexChanged.connect(self.update_graph)
+        self.main_window.workoutGraphComboBox.currentIndexChanged.connect(self.update_graph)
 
     def update_display(self):
         """Updates the display on the workout history tab with the data from the currently selected item."""
@@ -29,7 +29,7 @@ class WorkoutHistoryTab:
             self.main_window.dateLabel.setText(workout["date_time"])
             self.main_window.programLabel.setText(workout["program_name"])
             self.main_window.levelLabel.setText(str(workout["program_level"]))
-            self.main_window.timeLabel.setText(str(workout["total_duration"]))
+            self.main_window.durationLabel.setText(str(workout["duration"]))
             self.main_window.distanceLabel.setText(f"{workout['total_distance']} km")
             self.main_window.caloriesLabel.setText(str(workout["total_calories"]))
             self.main_window.avgSpeedLabel.setText(f"{workout['avg_speed']} km/h")

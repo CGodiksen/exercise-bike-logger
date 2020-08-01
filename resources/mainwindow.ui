@@ -283,7 +283,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Time</string>
+              <string>Duration</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
@@ -291,7 +291,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="timeLabel">
+            <widget class="QLabel" name="durationLabel">
              <property name="font">
               <font>
                <pointsize>14</pointsize>

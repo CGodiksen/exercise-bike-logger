@@ -1,7 +1,6 @@
 import json
 import statistics
 from datetime import datetime
-from pathlib import Path
 
 
 class WorkoutSession:
@@ -9,7 +8,6 @@ class WorkoutSession:
     This class describes a single workout session. Data from the exercise bike can be processed and saved. When the
     session is done the data can be saved to a file and further information can be extracted and saved separately.
     """
-
     def __init__(self, program, unix_time):
         """
         Method called when a WorkoutSession instance is initialized.
@@ -24,7 +22,7 @@ class WorkoutSession:
         self.date_time = datetime.fromtimestamp(int(self.unix_time)).strftime('%d-%m-%Y %H:%M:%S')
         self.program_name = program.program_name
         self.program_level = program.level
-        self.total_duration = program.duration
+        self.duration = None
         self.total_distance = None
         self.total_calories = None
         self.avg_speed = None
@@ -44,8 +42,6 @@ class WorkoutSession:
         self.watt = []
         self.level = []
 
-        self.__create_storage_setup()
-
     def process_read_response(self, data, display_updater):
         """
         Processing the response from the READ write operation and saving the processed data to the instance.
@@ -53,7 +49,6 @@ class WorkoutSession:
         :param data: The data package that contains information about the current state of the workout session.
         :param display_updater: The function that updates the display widgets on the live workout page.
         """
-
         # Doing necessary data preprocessing.
         data = [element - 1 for element in data]
 
@@ -83,7 +78,8 @@ class WorkoutSession:
         Processing the data from the workout session, extracting information about the data and saving it to an unique
         json file.
         """
-        # Adding the simple elements total distance and calories that are extracted by looking at the last element.
+        # Adding the simple elements duration, distance and calories that are extracted by looking at the last element.
+        self.duration = self.time[-1]
         self.total_distance = self.distance[-1]
         self.total_calories = self.calories[-1]
 
@@ -108,9 +104,3 @@ class WorkoutSession:
 
             # Saving the remaining attributes to the json file.
             json.dump(self.__dict__, jsonfile, ensure_ascii=False)
-
-    @staticmethod
-    def __create_storage_setup():
-        """Creates the needed storage setup if it does not already exist."""
-        # Creating the "data/workouts" directories if they do not already exist.
-        Path("data/workouts").mkdir(parents=True, exist_ok=True)

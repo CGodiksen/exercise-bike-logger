@@ -9,7 +9,7 @@ class WorkoutListModel(QtCore.QAbstractListModel):
     def __init__(self):
         super(WorkoutListModel, self).__init__()
 
-        # The list that will contain a dictionary for each workout with a key-value pair for each column.
+        # The list that will contain a dictionary for each workout with a key-value pair for each attribute.
         self.workouts = []
 
     def data(self, QModelIndex, role=None):
@@ -23,7 +23,7 @@ class WorkoutListModel(QtCore.QAbstractListModel):
         date = self.workouts[QModelIndex.row()]["date_time"]
         program = self.workouts[QModelIndex.row()]["program_name"]
         level = self.workouts[QModelIndex.row()]["program_level"]
-        duration = self.workouts[QModelIndex.row()]["total_duration"]
+        duration = self.workouts[QModelIndex.row()]["duration"]
         distance = self.workouts[QModelIndex.row()]["total_distance"]
 
         if role == Qt.DisplayRole:

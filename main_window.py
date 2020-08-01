@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from PyQt5 import QtWidgets, uic
 
 from workout_list_model import WorkoutListModel
@@ -13,6 +15,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Load the UI Page.
         uic.loadUi("resources/mainwindow.ui", self)
+
+        self.__create_storage_setup()
 
         # Setting up the model that handles the workout list view.
         self.model = WorkoutListModel()
@@ -49,3 +53,9 @@ class MainWindow(QtWidgets.QMainWindow):
             seconds.append(time_minutes)
 
         return seconds
+
+    @staticmethod
+    def __create_storage_setup():
+        """Creates the needed storage setup if it does not already exist."""
+        # Creating the "data/workouts" directories if they do not already exist.
+        Path("data/workouts").mkdir(parents=True, exist_ok=True)
