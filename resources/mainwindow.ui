@@ -14,7 +14,7 @@
    <string>Exercise Bike Assistant</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTabWidget" name="tabWidget">
+   <widget class="QTabWidget" name="mainWindowTab">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="workoutHistoryPage">
      <attribute name="title">
@@ -849,7 +849,7 @@
            <property name="minimumSize">
             <size>
              <width>75</width>
-             <height>75</height>
+             <height>80</height>
             </size>
            </property>
            <property name="frameShape">
@@ -864,10 +864,23 @@
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>71</height>
+              <height>81</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_18">
+             <item>
+              <spacer name="verticalSpacer_15">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
              <item>
               <widget class="QLabel" name="label_22">
                <property name="font">
@@ -944,7 +957,7 @@
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>71</height>
+              <height>79</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_35">
@@ -981,7 +994,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="highWattDateLabel">
+              <widget class="QPushButton" name="highWattDateButton">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -990,8 +1003,8 @@
                <property name="text">
                 <string>Date</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+               <property name="flat">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1013,7 +1026,7 @@
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>71</height>
+              <height>79</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1050,7 +1063,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="highSpeedDateLabel">
+              <widget class="QPushButton" name="highSpeedDateButton">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1059,8 +1072,8 @@
                <property name="text">
                 <string>Date</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+               <property name="flat">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1082,7 +1095,7 @@
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>71</height>
+              <height>79</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -1119,7 +1132,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="highRPMDateLabel">
+              <widget class="QPushButton" name="highRPMDateButton">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1128,8 +1141,8 @@
                <property name="text">
                 <string>Date</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+               <property name="flat">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1151,7 +1164,7 @@
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>71</height>
+              <height>79</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -1188,7 +1201,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="highAvgHeartRateDateLabel">
+              <widget class="QPushButton" name="highAvgHeartRateDateButton">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1197,8 +1210,8 @@
                <property name="text">
                 <string>Date</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+               <property name="flat">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1220,7 +1233,7 @@
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>71</height>
+              <height>79</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -1257,7 +1270,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="longestWorkoutDateLabel">
+              <widget class="QPushButton" name="longestWorkoutDateButton">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1266,8 +1279,8 @@
                <property name="text">
                 <string>Date</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+               <property name="flat">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1289,7 +1302,7 @@
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>71</height>
+              <height>79</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_34">
@@ -1326,7 +1339,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="highHeartRateDateLabel">
+              <widget class="QPushButton" name="highHeartRateDateButton">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1335,8 +1348,8 @@
                <property name="text">
                 <string>Date</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+               <property name="flat">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1358,7 +1371,7 @@
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>71</height>
+              <height>79</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1395,7 +1408,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="highAvgSpeedDateLabel">
+              <widget class="QPushButton" name="highAvgSpeedDateButton">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1404,8 +1417,8 @@
                <property name="text">
                 <string>Date</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+               <property name="flat">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1427,7 +1440,7 @@
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>71</height>
+              <height>79</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1464,7 +1477,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="mostCaloriesBurnedDateLabel">
+              <widget class="QPushButton" name="mostCaloriesBurnedDateButton">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1473,8 +1486,8 @@
                <property name="text">
                 <string>Date</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+               <property name="flat">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1496,7 +1509,7 @@
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>71</height>
+              <height>79</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -1533,7 +1546,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="highAvgWattDateLabel">
+              <widget class="QPushButton" name="highAvgWattDateButton">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1542,8 +1555,8 @@
                <property name="text">
                 <string>Date</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+               <property name="flat">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1556,7 +1569,7 @@
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>75</height>
+             <height>80</height>
             </size>
            </property>
            <property name="frameShape">
@@ -1571,10 +1584,23 @@
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>71</height>
+              <height>81</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_16">
+             <item>
+              <spacer name="verticalSpacer_12">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
              <item>
               <widget class="QLabel" name="label_18">
                <property name="font">
@@ -1651,7 +1677,7 @@
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>71</height>
+              <height>79</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1688,7 +1714,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="longestDistanceDateLabel">
+              <widget class="QPushButton" name="longestDistanceDateButton">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1697,8 +1723,8 @@
                <property name="text">
                 <string>Date</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+               <property name="flat">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1711,7 +1737,7 @@
            <property name="minimumSize">
             <size>
              <width>75</width>
-             <height>75</height>
+             <height>80</height>
             </size>
            </property>
            <property name="frameShape">
@@ -1726,10 +1752,23 @@
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>71</height>
+              <height>81</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_17">
+             <item>
+              <spacer name="verticalSpacer_14">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
              <item>
               <widget class="QLabel" name="label_19">
                <property name="font">
@@ -1806,10 +1845,23 @@
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>71</height>
+              <height>81</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_19">
+             <item>
+              <spacer name="verticalSpacer_13">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
              <item>
               <widget class="QLabel" name="label_25">
                <property name="font">
@@ -1886,7 +1938,7 @@
               <x>0</x>
               <y>0</y>
               <width>241</width>
-              <height>71</height>
+              <height>79</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -1923,7 +1975,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="highAvgRPMDateLabel">
+              <widget class="QPushButton" name="highAvgRPMDateButton">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -1932,8 +1984,8 @@
                <property name="text">
                 <string>Date</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+               <property name="flat">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1977,7 +2029,7 @@
             <widget class="QLabel" name="label_16">
              <property name="font">
               <font>
-               <pointsize>12</pointsize>
+               <pointsize>14</pointsize>
                <weight>75</weight>
                <bold>true</bold>
               </font>
@@ -1989,6 +2041,11 @@
            </item>
            <item>
             <widget class="QComboBox" name="comboBox">
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
              <item>
               <property name="text">
                <string>Workouts</string>
@@ -2015,7 +2072,7 @@
             <widget class="QLabel" name="label_17">
              <property name="font">
               <font>
-               <pointsize>12</pointsize>
+               <pointsize>14</pointsize>
                <weight>75</weight>
                <bold>true</bold>
               </font>
@@ -2027,6 +2084,11 @@
            </item>
            <item>
             <widget class="QComboBox" name="comboBox_2">
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
              <item>
               <property name="text">
                <string>Weekly</string>
@@ -2077,7 +2139,7 @@
            <property name="minimumSize">
             <size>
              <width>1000</width>
-             <height>300</height>
+             <height>275</height>
             </size>
            </property>
           </widget>

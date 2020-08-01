@@ -13,6 +13,31 @@ class StatisticsTab:
             self.process_workouts()
             self.update_display()
 
+        # When a date is clicked we go to that specific workout in the workout history.
+        self.main_window.longestWorkoutDateButton.clicked.connect(self.go_to_workout)
+        self.main_window.longestDistanceDateButton.clicked.connect(self.go_to_workout)
+        self.main_window.mostCaloriesBurnedDateButton.clicked.connect(self.go_to_workout)
+        self.main_window.highAvgSpeedDateButton.clicked.connect(self.go_to_workout)
+        self.main_window.highAvgRPMDateButton.clicked.connect(self.go_to_workout)
+        self.main_window.highAvgHeartRateDateButton.clicked.connect(self.go_to_workout)
+        self.main_window.highAvgWattDateButton.clicked.connect(self.go_to_workout)
+        self.main_window.highSpeedDateButton.clicked.connect(self.go_to_workout)
+        self.main_window.highRPMDateButton.clicked.connect(self.go_to_workout)
+        self.main_window.highHeartRateDateButton.clicked.connect(self.go_to_workout)
+        self.main_window.highWattDateButton.clicked.connect(self.go_to_workout)
+
+    def go_to_workout(self):
+        """Retrieves the date that was clicked and goes to that specific workout in the workout history."""
+        clicked_date = self.main_window.sender().text()
+
+        # Finding the workout list model index of the workout with the clicked date.
+        dates = [workout["date_time"] for workout in self.main_window.model.workouts]
+        date_index = dates.index(clicked_date)
+
+        # Changing to the tab on the main window that has the workout history and going to the specific workout.
+        self.main_window.mainWindowTab.setCurrentIndex(0)
+        self.main_window.workoutListView.setCurrentIndex(self.main_window.model.createIndex(date_index, 0))
+
     def update_display(self):
         """Updates the labels in the statistics tab."""
         self.main_window.totalWorkoutsLabel.setText(str(self.statistics["total_workouts"]))
@@ -21,37 +46,37 @@ class StatisticsTab:
         self.main_window.totalCaloriesLabel.setText(str(self.statistics["total_calories"]))
 
         self.main_window.longestWorkoutLabel.setText(self.statistics["longest_workout"][0])
-        self.main_window.longestWorkoutDateLabel.setText(self.statistics["longest_workout"][1])
+        self.main_window.longestWorkoutDateButton.setText(self.statistics["longest_workout"][1])
 
         self.main_window.longestDistanceLabel.setText(f"{self.statistics['longest_distance'][0]} km")
-        self.main_window.longestDistanceDateLabel.setText(self.statistics["longest_distance"][1])
+        self.main_window.longestDistanceDateButton.setText(self.statistics["longest_distance"][1])
 
         self.main_window.mostCaloriesBurnedLabel.setText(self.statistics["most_calories_burned"][0])
-        self.main_window.mostCaloriesBurnedDateLabel.setText(self.statistics["most_calories_burned"][1])
+        self.main_window.mostCaloriesBurnedDateButton.setText(self.statistics["most_calories_burned"][1])
 
         self.main_window.highAvgSpeedLabel.setText(f"{self.statistics['highest_average_speed'][0]} km/h")
-        self.main_window.highAvgSpeedDateLabel.setText(self.statistics["highest_average_speed"][1])
+        self.main_window.highAvgSpeedDateButton.setText(self.statistics["highest_average_speed"][1])
 
         self.main_window.highAvgRPMLabel.setText(self.statistics["highest_average_rpm"][0])
-        self.main_window.highAvgRPMDateLabel.setText(self.statistics["highest_average_rpm"][1])
+        self.main_window.highAvgRPMDateButton.setText(self.statistics["highest_average_rpm"][1])
 
         self.main_window.highAvgHeartRateLabel.setText(self.statistics["highest_average_heart_rate"][0])
-        self.main_window.highAvgHeartRateDateLabel.setText(self.statistics["highest_average_heart_rate"][1])
+        self.main_window.highAvgHeartRateDateButton.setText(self.statistics["highest_average_heart_rate"][1])
 
         self.main_window.highAvgWattLabel.setText(self.statistics["highest_average_watt"][0])
-        self.main_window.highAvgWattDateLabel.setText(self.statistics["highest_average_watt"][1])
+        self.main_window.highAvgWattDateButton.setText(self.statistics["highest_average_watt"][1])
 
         self.main_window.highSpeedLabel.setText(f"{self.statistics['highest_speed'][0]} km/h")
-        self.main_window.highSpeedDateLabel.setText(self.statistics["highest_speed"][1])
+        self.main_window.highSpeedDateButton.setText(self.statistics["highest_speed"][1])
 
         self.main_window.highRPMLabel.setText(self.statistics["highest_rpm"][0])
-        self.main_window.highRPMDateLabel.setText(self.statistics["highest_rpm"][1])
+        self.main_window.highRPMDateButton.setText(self.statistics["highest_rpm"][1])
 
         self.main_window.highHeartRateLabel.setText(self.statistics["highest_heart_rate"][0])
-        self.main_window.highHeartRateDateLabel.setText(self.statistics["highest_heart_rate"][1])
+        self.main_window.highHeartRateDateButton.setText(self.statistics["highest_heart_rate"][1])
 
         self.main_window.highWattLabel.setText(self.statistics["highest_watt"][0])
-        self.main_window.highWattDateLabel.setText(self.statistics["highest_watt"][1])
+        self.main_window.highWattDateButton.setText(self.statistics["highest_watt"][1])
 
     def update_graph(self):
         """Updates the graph in the statistics tab according to the chosen combo box configuration."""

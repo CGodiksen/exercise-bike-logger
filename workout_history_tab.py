@@ -1,7 +1,5 @@
 import pyqtgraph as pg
 
-from PyQt5.QtCore import QPoint
-
 
 # TODO: Make it so the workout history is updated automatically when a new workout is done.
 class WorkoutHistoryTab:
@@ -12,7 +10,7 @@ class WorkoutHistoryTab:
         self.main_window.workoutListView.selectionModel().selectionChanged.connect(self.update_display)
 
         # Selecting the most recent workout initially.
-        self.main_window.workoutListView.setCurrentIndex(self.main_window.workoutListView.indexAt(QPoint(0, 0)))
+        self.main_window.workoutListView.setCurrentIndex(self.main_window.model.createIndex(0, 0))
 
         # Updating the graph when the graph combo box is changed.
         self.main_window.workoutGraphComboBox.currentIndexChanged.connect(self.update_graph)
