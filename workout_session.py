@@ -1,7 +1,6 @@
-import csv
 import json
-import os
 import statistics
+from datetime import datetime
 from pathlib import Path
 
 
@@ -11,16 +10,31 @@ class WorkoutSession:
     session is done the data can be saved to a file and further information can be extracted and saved separately.
     """
 
-    def __init__(self, program, filename):
+    def __init__(self, program, unix_time):
         """
         Method called when a WorkoutSession instance is initialized.
 
         :param program: The workout program containing the level, duration and level changes of the workout.
-        :param filename: The CSV file in which the processed data should be saved.
+        :param unix_time: The name of the json file in which the processed data should be saved.
         """
         self.program = program
-        self.filename = filename
+        self.unix_time = unix_time
 
+        # Initializing the instance attributes that are going to be saved to the json file.
+        self.date_time = datetime.fromtimestamp(int(self.unix_time)).strftime('%d-%m-%Y %H:%M:%S')
+        self.program_name = program.program_name
+        self.program_level = program.level
+        self.total_duration = program.duration
+        self.total_distance = None
+        self.total_calories = None
+        self.avg_speed = None
+        self.avg_rpm = None
+        self.avg_heart_rate = None
+        self.avg_watt = None
+        self.max_speed = None
+        self.max_rpm = None
+        self.max_heart_rate = None
+        self.max_watt = None
         self.time = []
         self.speed = []
         self.rpm = []
@@ -66,51 +80,31 @@ class WorkoutSession:
 
     def process_workout_session(self):
         """
-        Processing the data from the workout session, extracting information about the data and saving it to the
-        "workouts.csv" file containing a single row for each workout session. Since this method is called when the
-        session is over, we also serialize the object to a file to save the data for later use.
+        Processing the data from the workout session, extracting information about the data and saving it to an unique
+        json file.
         """
-        # Adding each element that should be in the row, starting with the Epoch time of the workout.
-        new_row = [self.filename]
-
-        # Adding the elements that can be extracted from the chosen workout program.
-        new_row.append(self.program.program_name)
-        new_row.append(self.program.level)
-
-        # Adding the simple elements duration, distance and calories that are extracted by looking at single rows.
-        new_row.append(self.time[-1])
-        new_row.append(self.distance[-1])
-        new_row.append(self.calories[-1])
+        # Adding the simple elements total distance and calories that are extracted by looking at the last element.
+        self.total_distance = self.distance[-1]
+        self.total_calories = self.calories[-1]
 
         # Adding average speed, average rpm, average heart rate and average watt rounded to two decimals.
-        new_row.append(round(statistics.mean(self.speed), 2))
-        new_row.append(round(statistics.mean(self.rpm), 2))
-        new_row.append(round(statistics.mean(self.heart_rate), 2))
-        new_row.append(round(statistics.mean( self.watt), 2))
+        self.avg_speed = round(statistics.mean(self.speed), 2)
+        self.avg_rpm = round(statistics.mean(self.rpm), 2)
+        self.avg_heart_rate = round(statistics.mean(self.heart_rate), 2)
+        self.avg_watt = round(statistics.mean( self.watt), 2)
 
         # Adding max speed, max rpm, max heart rate and max watt.
-        new_row.append(max(self.speed))
-        new_row.append(max(self.rpm))
-        new_row.append(max(self.heart_rate))
-        new_row.append(max(self.watt))
-
-        with open("data/workouts.csv", "a+", newline="") as csvfile:
-            data_writer = csv.writer(csvfile)
-
-            # If the file is empty then we start by adding a header.
-            if os.stat(f"data/workouts.csv").st_size == 0:
-                data_writer.writerow(["date", "program", "level", "duration", "distance", "calories", "avg_speed",
-                                      "avg_rpm", "avg_heart_rate", "avg_watt", "max_speed", "max_rpm", "max_heart_rate",
-                                      "max_watt"])
-
-            data_writer.writerow(new_row)
+        self.max_speed = max(self.speed)
+        self.max_rpm = max(self.rpm)
+        self.max_heart_rate = max(self.heart_rate)
+        self.max_watt = max(self.watt)
 
         # Serializing the session to save it for later use.
-        with open(f"data/workouts/{self.filename}.json", "w+", encoding='utf-8') as jsonfile:
+        with open(f"data/workouts/{self.unix_time}.json", "w+", encoding='utf-8') as jsonfile:
             # Getting the instance as a dictionary and removing the attributes that we do not want to save.
             session_dict = self.__dict__
             del session_dict["program"]
-            del session_dict["filename"]
+            del session_dict["unix_time"]
 
             # Saving the remaining attributes to the json file.
             json.dump(self.__dict__, jsonfile, ensure_ascii=False)
