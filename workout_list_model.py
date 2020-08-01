@@ -1,5 +1,5 @@
-import csv
-from datetime import datetime
+import json
+import os
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
@@ -20,11 +20,11 @@ class WorkoutListModel(QtCore.QAbstractListModel):
         :param role: The specific data that we wish to extract.
         :return: The name of the subreddit if the role is DisplayRole.
         """
-        date = datetime.fromtimestamp(int(self.workouts[QModelIndex.row()]["date"])).strftime('%d-%m-%Y %H:%M:%S')
-        program = self.workouts[QModelIndex.row()]["program"]
-        level = self.workouts[QModelIndex.row()]["level"]
-        duration = self.workouts[QModelIndex.row()]["duration"]
-        distance = self.workouts[QModelIndex.row()]["distance"]
+        date = self.workouts[QModelIndex.row()]["date_time"]
+        program = self.workouts[QModelIndex.row()]["program_name"]
+        level = self.workouts[QModelIndex.row()]["program_level"]
+        duration = self.workouts[QModelIndex.row()]["total_duration"]
+        distance = self.workouts[QModelIndex.row()]["total_distance"]
 
         if role == Qt.DisplayRole:
             return f"{date} - {program} - Level {level}\nDuration: {duration} - Distance: {distance} km"
@@ -37,12 +37,10 @@ class WorkoutListModel(QtCore.QAbstractListModel):
         return len(self.workouts)
 
     def load_workouts(self):
-        """Loading the workouts from the workouts.csv file into the internal model."""
-        with open("data/workouts.csv", "r") as csvfile:
-            workout_reader = csv.DictReader(csvfile)
+        """Loading the workouts from the json files in the "workouts" folder into the internal model."""
+        for filename in os.listdir("data/workouts"):
+            with open(f"data/workouts/{filename}", "r") as jsonfile:
+                self.workouts.append(json.load(jsonfile))
 
-            for row in workout_reader:
-                self.workouts.append(row)
-
-            # Reversing the list so the most recent workout is first.
-            self.workouts.reverse()
+        # Reversing the list so the most recent workout is first.
+        self.workouts.reverse()
