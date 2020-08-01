@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="workoutHistoryPage">
      <attribute name="title">
@@ -84,7 +84,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="graphComboBox">
+          <widget class="QComboBox" name="workoutGraphComboBox">
            <property name="font">
             <font>
              <pointsize>12</pointsize>

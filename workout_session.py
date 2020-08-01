@@ -91,7 +91,7 @@ class WorkoutSession:
         self.avg_speed = round(statistics.mean(self.speed), 2)
         self.avg_rpm = round(statistics.mean(self.rpm), 2)
         self.avg_heart_rate = round(statistics.mean(self.heart_rate), 2)
-        self.avg_watt = round(statistics.mean( self.watt), 2)
+        self.avg_watt = round(statistics.mean(self.watt), 2)
 
         # Adding max speed, max rpm, max heart rate and max watt.
         self.max_speed = max(self.speed)
