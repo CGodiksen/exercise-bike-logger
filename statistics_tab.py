@@ -26,6 +26,8 @@ class StatisticsTab:
         self.main_window.highHeartRateDateButton.clicked.connect(self.go_to_workout)
         self.main_window.highWattDateButton.clicked.connect(self.go_to_workout)
 
+        self.update_graph()
+
     def go_to_workout(self):
         """Retrieves the date that was clicked and goes to that specific workout in the workout history."""
         clicked_date = self.main_window.sender().text()
@@ -80,6 +82,7 @@ class StatisticsTab:
 
     def update_graph(self):
         """Updates the graph in the statistics tab according to the chosen combo box configuration."""
+        self.main_window.statisticsGraphWidget.setBackground("#31363b")
 
     def process_workouts(self):
         """Processes the internal workout list model to extract the needed statistics so they can be displayed."""

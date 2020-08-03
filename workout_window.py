@@ -29,10 +29,12 @@ class WorkoutWindow(QtWidgets.QMainWindow):
 
         # Performing cosmetic changes to the coordinate lists to make the visualization clearer and plotting them.
         x, y = self.program.prettify_line()
-        self.graphWidget.plot(x, y, pen=pg.mkPen(color="#4b6bc8"))
+        self.graphWidget.plot(x, y, pen=pg.mkPen(color="#4b6bc8", width=3))
+
+        self.graphWidget.setBackground("#31363b")
 
         # Initializing the point that highlights where the user currently is in the workout program.
-        self.highlight_point = self.graphWidget.plot([0], [self.program.level], symbol="o", symbolSize=13)
+        self.highlight_point = self.graphWidget.plot([0], [self.program.level], symbol="o", symbolSize=20)
 
         # Setting up multi threading.
         self.threadpool = QThreadPool()

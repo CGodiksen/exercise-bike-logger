@@ -37,7 +37,9 @@ class ConfigureDialog(QtWidgets.QDialog):
                                       self.programComboBox.currentText())
         self.graphWidget.clear()
 
+        self.graphWidget.setBackground("#31363b")
+
         # Performing cosmetic changes to the coordinate lists to make the visualization clearer.
         x, y = self.program.prettify_line()
 
-        self.graphWidget.plot(x, y, pen=pg.mkPen(color="#4b6bc8"))
+        self.graphWidget.plot(x, y, pen=pg.mkPen(color="#4b6bc8", width=3))

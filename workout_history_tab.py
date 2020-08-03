@@ -60,6 +60,8 @@ class WorkoutHistoryTab:
 
             self.main_window.workoutGraphWidget.clear()
 
+            self.main_window.workoutGraphWidget.setBackground("#31363b")
+
             # Choosing the color of the line based on the index of the combo box to ensure each line is unique.
             colors = ["#4b6bc8", "#FFFF00", "#CD0000", "#008000", "#800080", "#FFA500", "#00FFD2"]
             line_color = colors[self.main_window.workoutGraphComboBox.currentIndex()]
@@ -67,6 +69,6 @@ class WorkoutHistoryTab:
             # Plotting the content in the graph, including the line and label names.
             self.main_window.workoutGraphWidget.plot(x, y, pen=pg.mkPen(color=line_color, width=2), name=data_name)
 
-            label_style = {'color': '#808080', 'font-size': '14pt'}
+            label_style = {'color': '#ffffff', 'font-size': '14pt'}
             self.main_window.workoutGraphWidget.setLabel("bottom", "Minutes", **label_style)
             self.main_window.workoutGraphWidget.setLabel("left", data_name, **label_style)

@@ -23,8 +23,16 @@
       <height>591</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
     <property name="currentIndex">
      <number>0</number>
+    </property>
+    <property name="movable">
+     <bool>false</bool>
     </property>
     <widget class="QWidget" name="workoutHistoryPage">
      <attribute name="title">
@@ -89,6 +97,9 @@
             <font>
              <pointsize>12</pointsize>
             </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(24, 37, 48);</string>
            </property>
            <item>
             <property name="text">
@@ -282,6 +293,12 @@
                <bold>true</bold>
               </font>
              </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
              <property name="text">
               <string>Duration</string>
              </property>
@@ -370,6 +387,9 @@
          </property>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
+         </property>
+         <property name="lineWidth">
+          <number>1</number>
          </property>
          <widget class="QWidget" name="verticalLayoutWidget_3">
           <property name="geometry">
@@ -2046,6 +2066,9 @@
                <pointsize>10</pointsize>
               </font>
              </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(24, 37, 48);</string>
+             </property>
              <item>
               <property name="text">
                <string>Workouts</string>
@@ -2088,6 +2111,9 @@
               <font>
                <pointsize>10</pointsize>
               </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(24, 37, 48);</string>
              </property>
              <item>
               <property name="text">
@@ -2212,7 +2238,7 @@
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true"/>
+        <string notr="true">background-color: rgb(0, 85, 255);</string>
        </property>
        <property name="text">
         <string>Settings</string>
