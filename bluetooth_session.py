@@ -42,7 +42,8 @@ class BluetoothSession:
         self.workout_session = workout_session
         self.display_updater = display_updater
 
-        # Flag that is set to True when the workout session is complete.
+        # Flag that is set to True when the "Stop workout" button is pressed. We do not save the data from the session
+        # when that button is pressed since it means the session was stopped prematurely.
         self.stop_flag = False
 
         self.client = None
@@ -68,12 +69,12 @@ class BluetoothSession:
                 time.sleep(1)
 
                 while not self.stop_flag:
-                    # Reading the current data from the exercise bike.
-                    await self.client.write_gatt_char(self.characteristic_uuid, READ)
-
                     # Stopping the session if the session is out of time.
                     if self.current_minute == self.workout_session.program.duration:
-                        self.stop_flag = True
+                        break
+
+                    # Reading the current data from the exercise bike.
+                    await self.client.write_gatt_char(self.characteristic_uuid, READ)
 
                     # Changing the resistance level if the chosen workout program specifies it.
                     if self.current_minute < self.workout_session.program.duration:
@@ -115,8 +116,9 @@ class BluetoothSession:
         await self.client.write_gatt_char(self.characteristic_uuid, STOP)
         await self.client.stop_notify(self.characteristic_uuid)
 
-        # Processing the entire workout session to extract further data.
-        self.workout_session.process_workout_session()
+        # Processing the entire workout session to extract and save the data if the workout was stopped due to time.
+        if not self.stop_flag:
+            self.workout_session.process_workout_session()
 
     def notification_handler(self, sender, data):
         """Handling the notifications that are received from a characteristic."""

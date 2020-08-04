@@ -62,9 +62,8 @@ class WorkoutWindow(QtWidgets.QMainWindow):
         worker = Worker(loop.run_until_complete, self.session.run_session())
         self.threadpool.start(worker)
 
-    # TODO: Make it so we dont save the data from the exercise if this button is pressed.
     def stop_workout(self):
-        """Stopping the workout by setting the internal stop flag to True."""
+        """Stopping the workout prematurely by setting the internal stop flag to True."""
         self.session.stop_flag = True
 
     def update_live_page(self, timestamp, speed, rpm, distance, calories, heart_rate, watt):
