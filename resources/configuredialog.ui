@@ -113,7 +113,7 @@
          </font>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(24, 37, 48);</string>
+         <string notr="true">background-color: rgb(48, 48, 48);</string>
         </property>
         <item>
          <property name="text">
