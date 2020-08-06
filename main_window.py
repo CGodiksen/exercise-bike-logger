@@ -28,11 +28,26 @@ class MainWindow(QtWidgets.QMainWindow):
         self.statistics_tab = StatisticsTab(self)
 
         # Connecting the buttons with their respective functionality.
-        self.configure_dialog = ConfigureDialog()
+        self.configure_dialog = ConfigureDialog(self)
         self.newWorkoutButton.clicked.connect(self.configure_dialog.show)
 
         self.settings_dialog = SettingsDialog()
         self.settingsButton.clicked.connect(self.settings_dialog.show)
+
+    def update_window(self):
+        """
+        Updates the workout history tab and the statistics tab with the current data. This should be called when a
+        new workout is finished.
+        """
+        # Updating the workout list view on the workout history tab and selecting the most recent workout.
+        self.model.load_workouts()
+        self.model.layoutChanged.emit()
+        self.workoutListView.setCurrentIndex(self.model.createIndex(0, 0))
+
+        # Updating the statistics tab with the current data.
+        self.statistics_tab.process_workouts()
+        self.statistics_tab.update_display()
+        self.statistics_tab.update_graph()
 
     @staticmethod
     def timestamps_to_seconds(timestamps):

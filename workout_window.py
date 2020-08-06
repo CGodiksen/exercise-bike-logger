@@ -12,11 +12,12 @@ from workout_session import WorkoutSession
 
 
 class WorkoutWindow(QtWidgets.QMainWindow):
-    def __init__(self, program, *args, **kwargs):
+    def __init__(self, program, main_window, *args, **kwargs):
         """
         Method called when a live workout window is initialized.
 
         :param program: The workout program containing the level, duration and level changes of the workout.
+        :param main_window: The main window instance which is used to update the main window when the workout is done.
         """
         super(WorkoutWindow, self).__init__(*args, **kwargs)
 
@@ -26,6 +27,7 @@ class WorkoutWindow(QtWidgets.QMainWindow):
         self.session = None
 
         self.program = program
+        self.main_window = main_window
 
         # Performing cosmetic changes to the coordinate lists to make the visualization clearer and plotting them.
         x, y = self.program.prettify_line()
@@ -55,7 +57,7 @@ class WorkoutWindow(QtWidgets.QMainWindow):
 
         loop = asyncio.get_event_loop()
 
-        workout_session = WorkoutSession(self.program, filename)
+        workout_session = WorkoutSession(self.program, filename, self.main_window)
         self.session = bluetooth_session.BluetoothSession(self.characteristic_uuid, self.address,
                                                           workout_session, self.update_live_page)
 

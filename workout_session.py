@@ -8,15 +8,17 @@ class WorkoutSession:
     This class describes a single workout session. Data from the exercise bike can be processed and saved. When the
     session is done the data can be saved to a file and further information can be extracted and saved separately.
     """
-    def __init__(self, program, unix_time):
+    def __init__(self, program, unix_time, main_window):
         """
         Method called when a WorkoutSession instance is initialized.
 
         :param program: The workout program containing the level, duration and level changes of the workout.
         :param unix_time: The name of the json file in which the processed data should be saved.
+        :param main_window: The main window instance which is used to update the main window when the workout is done.
         """
         self.program = program
         self.unix_time = unix_time
+        self.main_window = main_window
 
         # Initializing the instance attributes that are going to be saved to the json file.
         self.date_time = datetime.fromtimestamp(int(self.unix_time)).strftime('%d-%m-%Y %H:%M:%S')
@@ -98,9 +100,13 @@ class WorkoutSession:
         # Serializing the session to save it for later use.
         with open(f"data/workouts/{self.unix_time}.json", "w+", encoding='utf-8') as jsonfile:
             # Getting the instance as a dictionary and removing the attributes that we do not want to save.
-            session_dict = self.__dict__
+            session_dict = self.__dict__.copy()
             del session_dict["program"]
             del session_dict["unix_time"]
+            del session_dict["main_window"]
 
             # Saving the remaining attributes to the json file.
-            json.dump(self.__dict__, jsonfile, ensure_ascii=False)
+            json.dump(session_dict, jsonfile, ensure_ascii=False)
+
+        # The workout history and statistics tabs are updated since a new workout is added to the data.
+        self.main_window.update_window()

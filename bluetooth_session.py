@@ -1,7 +1,6 @@
 import struct
 import time
 import asyncio
-
 import bleak
 
 # Defining the data that can be written to the characteristic.
