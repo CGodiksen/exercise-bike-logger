@@ -1,9 +1,9 @@
 import sys
-import breeze_resources
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QFile, QTextStream
 
+from resources import breeze_resources
 from main_window import MainWindow
 
 
