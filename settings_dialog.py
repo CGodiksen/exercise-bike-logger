@@ -7,6 +7,8 @@ clicked on the main window. The "Settings" class defines methods that can be use
 save the above mentioned settings.
 """
 import json
+import os
+
 from PyQt5 import QtWidgets, uic
 
 
@@ -42,6 +44,10 @@ class SettingsDialog(QtWidgets.QDialog):
 
 class Settings:
     def __init__(self):
+        # If the settings file does not already exist then create a new empty settings file.
+        if "settings.json" not in os.listdir("resources"):
+            self.create_file()
+
         self.address = ""
         self.characteristic_uuid = ""
         self.load_settings()
@@ -57,3 +63,9 @@ class Settings:
         """Saving the current settings to the the settings file"""
         with open("resources/settings.json", "w") as settings_file:
             json.dump({"address": self.address, "characteristic uuid": self.characteristic_uuid}, settings_file)
+
+    @staticmethod
+    def create_file():
+        """Creates an empty settings file."""
+        with open("resources/settings.json", "w+") as settings_file:
+            json.dump({"address": "", "characteristic uuid": ""}, settings_file)
