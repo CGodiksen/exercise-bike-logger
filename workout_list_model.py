@@ -23,11 +23,9 @@ class WorkoutListModel(QtCore.QAbstractListModel):
         date = self.workouts[QModelIndex.row()]["date_time"]
         program = self.workouts[QModelIndex.row()]["program_name"]
         level = self.workouts[QModelIndex.row()]["program_level"]
-        duration = self.workouts[QModelIndex.row()]["duration"]
-        distance = self.workouts[QModelIndex.row()]["total_distance"]
 
         if role == Qt.DisplayRole:
-            return f"{date} - {program} - Level {level}\nDuration: {duration} - Distance: {distance} km"
+            return f"\n {date} - {program} - Level {level}\n"
 
     def rowCount(self, parent=None, *args, **kwargs):
         """

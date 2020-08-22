@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1250</width>
-    <height>700</height>
+    <height>690</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -880,10 +880,22 @@
       </property>
       <property name="font">
        <font>
-        <pointsize>12</pointsize>
+        <pointsize>13</pointsize>
         <weight>50</weight>
         <bold>false</bold>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="flow">
+       <enum>QListView::TopToBottom</enum>
+      </property>
+      <property name="spacing">
+       <number>0</number>
       </property>
      </widget>
     </widget>
@@ -2557,7 +2569,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="PlotWidget" name="statisticsGraphWidget" native="true">
+          <widget class="MplWidget" name="statisticsGraphWidget" native="true">
            <property name="minimumSize">
             <size>
              <width>1000</width>
@@ -2667,9 +2679,14 @@
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>MplWidget</class>
+   <extends>QWidget</extends>
+   <header>mplwidget.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>PlotWidget</class>
    <extends>QWidget</extends>
