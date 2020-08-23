@@ -16,7 +16,6 @@ STOP = struct.pack('BBBBBB', 0xf0, 0xa5, 0x01, 0x01, 0x04, 0x9b)
 READ = struct.pack('BBBBB', 0xf0, 0xa2, 0x01, 0x01, 0x94)
 
 
-# TODO: Make it so it keeps trying to connect if the device can't be found.
 class BluetoothSession:
     """
     Class that handles all bluetooth connectivity for a workout session including, connecting the the exercise bike,
@@ -87,6 +86,7 @@ class BluetoothSession:
                 await self.stop_session()
         except bleak.BleakError as e:
             print(f"Bleak raised an exception: {e}")
+            await self.run_session()
 
     async def initialize_session(self):
         """Running the specific initialization protocol used to connect to the exercise bike."""
