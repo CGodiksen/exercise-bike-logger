@@ -30,3 +30,10 @@ class MplWidget(QtWidgets.QWidget):
         self.vbl = QtWidgets.QVBoxLayout()
         self.vbl.addWidget(self.canvas)
         self.setLayout(self.vbl)
+
+        # Setting the color of the axis ticks.
+        self.canvas.ax.tick_params(axis="x", colors="white")
+        self.canvas.ax.tick_params(axis="y", colors="white")
+
+        # Setting the background color of the plot itself.
+        self.canvas.ax.set_facecolor("#31363b")

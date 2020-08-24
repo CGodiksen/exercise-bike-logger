@@ -1,6 +1,8 @@
 import datetime
 
 from dateutil import parser
+from matplotlib.patches import Rectangle
+from matplotlib.text import Text
 
 
 class StatisticsTab:
@@ -10,6 +12,9 @@ class StatisticsTab:
         # Dictionary that will contain a key-value pair for each distinct statistic. If the statistic concerns a single
         # workout the value is a tuple with the format (statistic, date of workout).
         self.statistics = {}
+
+        # Dictionary that will contain the data that is used in the interactive graph.
+        self.interactive_data = {}
 
         if len(self.main_window.model.workouts) != 0:
             self.process_workouts()
@@ -27,6 +32,9 @@ class StatisticsTab:
         self.main_window.highRPMDateButton.clicked.connect(self.go_to_workout)
         self.main_window.highHeartRateDateButton.clicked.connect(self.go_to_workout)
         self.main_window.highWattDateButton.clicked.connect(self.go_to_workout)
+
+        # When the data combobox is changed we update the graph.
+        self.main_window.dataComboBox.currentIndexChanged.connect(self.update_graph)
 
         self.update_graph()
 
@@ -84,7 +92,43 @@ class StatisticsTab:
 
     def update_graph(self):
         """Updates the graph in the statistics tab according to the chosen combo box configuration."""
-        self.main_window.statisticsGraphWidget.setBackground("#31363b")
+        self.main_window.statisticsGraphWidget.canvas.ax.clear()
+
+        data_name = self.main_window.dataComboBox.currentText().lower()
+
+        x = [str(key) for key, value in self.interactive_data.items()]
+        y = [value["data"][data_name] for key, value in self.interactive_data.items()]
+
+        bars = self.main_window.statisticsGraphWidget.canvas.ax.bar(x, y, picker=True)
+        self.label_bars(bars)
+
+        for label in self.main_window.statisticsGraphWidget.canvas.ax.get_xticklabels():
+            label.set_picker(True)
+
+        cid = self.main_window.statisticsGraphWidget.canvas.fig.canvas.mpl_connect('pick_event', self.on_pick)
+
+        self.main_window.statisticsGraphWidget.canvas.ax.set_ylabel(data_name.capitalize(), color="white", fontsize=12)
+
+        self.main_window.statisticsGraphWidget.canvas.draw()
+
+    @staticmethod
+    def on_pick(event):
+        if isinstance(event.artist, Rectangle):
+            patch = event.artist
+            print('onpick1 patch:', patch.get_path())
+        elif isinstance(event.artist, Text):
+            text = event.artist
+            print('onpick1 text:', text.get_text())
+
+    def label_bars(self, bars):
+        """Attach a text label above each bar, displaying its height."""
+        for bar in bars:
+            height = bar.get_height()
+            self.main_window.statisticsGraphWidget.canvas.ax.annotate('{}'.format(height),
+                                                                      xy=(bar.get_x() + bar.get_width() / 2, height),
+                                                                      xytext=(0, 3),  # 3 points vertical offset
+                                                                      textcoords="offset points",
+                                                                      ha='center', va='bottom', color="white")
 
     def process_workouts(self):
         """Processes the internal workout list model to extract the needed statistics so they can be displayed."""
@@ -114,7 +158,7 @@ class StatisticsTab:
         self.statistics["highest_heart_rate"] = self.get_max_value_date(workouts, "max_heart_rate")
         self.statistics["highest_watt"] = self.get_max_value_date(workouts, "max_watt")
 
-        self.get_interactive_graph_data(workouts)
+        self.interactive_data = self.get_interactive_graph_data(workouts)
 
     @staticmethod
     def get_max_value_date(workouts, key):
@@ -161,46 +205,48 @@ class StatisticsTab:
 
             # Creating a new entry if the entry does not exist. For example, if it is the first workout of 2020.
             if previous_year != date_time.year:
-                data[date_time.year] = {"data": {"total_workouts": 0,
-                                                 "total_seconds": 0,
-                                                 "total_distance": 0,
-                                                 "total_calories": 0}, "months": {}}
+                data[date_time.year] = {"data": {"workouts": 0,
+                                                 "time": 0,
+                                                 "distance": 0,
+                                                 "calories": 0}, "months": {}}
 
             # Adding the data from the workout to the total data for this year.
             year_data = data[date_time.year]["data"]
-            year_data["total_workouts"] += 1
-            year_data["total_seconds"] += self.main_window.timestamp_to_seconds(workout["duration"])
-            year_data["total_distance"] += workout["total_distance"]
-            year_data["total_calories"] += workout["total_calories"]
+            year_data["workouts"] += 1
+            year_data["time"] += self.main_window.timestamp_to_seconds(workout["duration"])
+            year_data["distance"] += workout["total_distance"]
+            year_data["calories"] += workout["total_calories"]
 
             # Creating a new entry if the entry does not exist. For example, if it is the first workout of january.
             if previous_year != date_time.year or previous_month != date_time.month:
-                data[date_time.year]["months"][date_time.month] = {"data": {"total_workouts": 0,
-                                                                            "total_seconds": 0,
-                                                                            "total_distance": 0,
-                                                                            "total_calories": 0}, "days": {}}
+                data[date_time.year]["months"][date_time.month] = {"data": {"workouts": 0,
+                                                                            "time": 0,
+                                                                            "distance": 0,
+                                                                            "calories": 0}, "days": {}}
 
             # Adding the data from the workout to the total data for this month.
             month_data = data[date_time.year]["months"][date_time.month]["data"]
-            month_data["total_workouts"] += 1
-            month_data["total_seconds"] += self.main_window.timestamp_to_seconds(workout["duration"])
-            month_data["total_distance"] += workout["total_distance"]
-            month_data["total_calories"] += workout["total_calories"]
+            month_data["workouts"] += 1
+            month_data["time"] += self.main_window.timestamp_to_seconds(workout["duration"])
+            month_data["distance"] += workout["total_distance"]
+            month_data["calories"] += workout["total_calories"]
 
             # Creating a new entry if the entry does not exist. For example, if it is the first workout of january 1st.
             if previous_year != date_time.year or previous_month != date_time.month or previous_day != date_time.day:
-                data[date_time.year]["months"][date_time.month]["days"][date_time.day] = {"total_workouts": 0,
-                                                                                          "total_seconds": 0,
-                                                                                          "total_distance": 0,
-                                                                                          "total_calories": 0}
+                data[date_time.year]["months"][date_time.month]["days"][date_time.day] = {"workouts": 0,
+                                                                                          "time": 0,
+                                                                                          "distance": 0,
+                                                                                          "calories": 0}
 
             # Adding the data from the workout to the total data for this day.
             day_data = data[date_time.year]["months"][date_time.month]["days"][date_time.day]
-            day_data["total_workouts"] += 1
-            day_data["total_seconds"] += self.main_window.timestamp_to_seconds(workout["duration"])
-            day_data["total_distance"] += workout["total_distance"]
-            day_data["total_calories"] += workout["total_calories"]
+            day_data["workouts"] += 1
+            day_data["time"] += self.main_window.timestamp_to_seconds(workout["duration"])
+            day_data["distance"] += workout["total_distance"]
+            day_data["calories"] += workout["total_calories"]
 
             previous_year = date_time.year
             previous_month = date_time.month
             previous_day = date_time.day
+
+        return data

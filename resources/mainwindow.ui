@@ -29,7 +29,7 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="movable">
      <bool>false</bool>
@@ -2468,7 +2468,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="comboBox">
+            <widget class="QComboBox" name="dataComboBox">
              <property name="font">
               <font>
                <pointsize>10</pointsize>
@@ -2495,47 +2495,6 @@
              <item>
               <property name="text">
                <string>Calories</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_17">
-             <property name="font">
-              <font>
-               <pointsize>14</pointsize>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Time frame:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="comboBox_2">
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-              </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(35, 38, 41);</string>
-             </property>
-             <item>
-              <property name="text">
-               <string>Weekly</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Monthly</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Yearly</string>
               </property>
              </item>
             </widget>
