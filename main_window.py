@@ -50,22 +50,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.statistics_tab.update_graph()
 
     @staticmethod
-    def timestamps_to_seconds(timestamps):
-        """
-        Converts a list of timestamps into a list of seconds.
-
-        :param timestamps: A list of timestamps where each timestamp has the format "HH:MM:SS".
-        """
-        seconds = []
-        for timestamp in timestamps:
-            # Adding the seconds from the timestamp.
-            time_minutes = int(timestamp[6:])
-            # Adding the seconds from the timestamp in seconds.
-            time_minutes += int(timestamp[3:5]) * 60
-            # Adding the hours from the timestamp in seconds.
-            time_minutes += int(timestamp[:2]) * 3600
-
-            seconds.append(time_minutes)
+    def timestamp_to_seconds(timestamp):
+        """Converts a timestamp with the format "HH:MM:SS" into the equivalent amount of seconds. """
+        # Adding the seconds from the timestamp.
+        seconds = int(timestamp[6:])
+        # Adding the minutes from the timestamp in seconds.
+        seconds += int(timestamp[3:5]) * 60
+        # Adding the hours from the timestamp in seconds.
+        seconds += int(timestamp[:2]) * 3600
 
         return seconds
 

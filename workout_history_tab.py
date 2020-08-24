@@ -53,7 +53,7 @@ class WorkoutHistoryTab:
             data_name = self.main_window.workoutGraphComboBox.currentText()
 
             # Converting the timestamps into minutes and using them as the x-coordinate.
-            x = [seconds / 60 for seconds in self.main_window.timestamps_to_seconds(workout["time"])]
+            x = [self.main_window.timestamp_to_seconds(timestamp) / 60 for timestamp in workout["time"]]
 
             # Initializing the y-coordinates.
             y = workout[data_name.lower().replace(" ", "_")]
