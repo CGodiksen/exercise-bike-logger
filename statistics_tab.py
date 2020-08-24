@@ -95,31 +95,32 @@ class StatisticsTab:
         seconds = self.main_window.timestamps_to_seconds([workout["duration"] for workout in workouts])
         self.statistics["total_time"] = str(datetime.timedelta(seconds=sum(seconds)))
 
-        self.statistics["total_distance"] = str(sum([workout["total_distance"] for workout in workouts]))
+        self.statistics["total_distance"] = str(round(sum([workout["total_distance"] for workout in workouts]), 1))
         self.statistics["total_calories"] = str(sum([workout["total_calories"] for workout in workouts]))
 
         longest_workout = workouts[seconds.index(max(seconds))]
         self.statistics["longest_workout"] = (str(longest_workout["duration"]), longest_workout["date_time"])
 
-        self.statistics["longest_distance"] = self.get_max_value_date("total_distance")
-        self.statistics["most_calories_burned"] = self.get_max_value_date("total_calories")
-        self.statistics["highest_average_speed"] = self.get_max_value_date("avg_speed")
-        self.statistics["highest_average_rpm"] = self.get_max_value_date("avg_rpm")
-        self.statistics["highest_average_heart_rate"] = self.get_max_value_date("avg_heart_rate")
-        self.statistics["highest_average_watt"] = self.get_max_value_date("avg_watt")
-        self.statistics["highest_speed"] = self.get_max_value_date("max_speed")
-        self.statistics["highest_rpm"] = self.get_max_value_date("max_rpm")
-        self.statistics["highest_heart_rate"] = self.get_max_value_date("max_heart_rate")
-        self.statistics["highest_watt"] = self.get_max_value_date("max_watt")
+        self.statistics["longest_distance"] = self.get_max_value_date(workouts, "total_distance")
+        self.statistics["most_calories_burned"] = self.get_max_value_date(workouts, "total_calories")
+        self.statistics["highest_average_speed"] = self.get_max_value_date(workouts, "avg_speed")
+        self.statistics["highest_average_rpm"] = self.get_max_value_date(workouts, "avg_rpm")
+        self.statistics["highest_average_heart_rate"] = self.get_max_value_date(workouts, "avg_heart_rate")
+        self.statistics["highest_average_watt"] = self.get_max_value_date(workouts, "avg_watt")
+        self.statistics["highest_speed"] = self.get_max_value_date(workouts, "max_speed")
+        self.statistics["highest_rpm"] = self.get_max_value_date(workouts, "max_rpm")
+        self.statistics["highest_heart_rate"] = self.get_max_value_date(workouts, "max_heart_rate")
+        self.statistics["highest_watt"] = self.get_max_value_date(workouts, "max_watt")
 
-    def get_max_value_date(self, key):
+    @staticmethod
+    def get_max_value_date(workouts, key):
         """
         Finds the index of the workout with the maximum value for the given key.
 
+        :param workouts: A list of dictionaries where each dictionary represents a workout.
         :param key: The specific attribute that we search for the maximum value for.
-        :return: The maximum value and the date of the workout with the maximum value."""
-        workouts = self.main_window.model.workouts
-
+        :return: The maximum value and the date of the workout with the maximum value.
+        """
         # Extracting the specific data from each workout in the workout list model.
         key_list = [workout[key] for workout in workouts]
 
