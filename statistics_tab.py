@@ -1,7 +1,7 @@
 import datetime
+import calendar
 
 from dateutil import parser
-from matplotlib.patches import Rectangle
 from matplotlib.text import Text
 
 
@@ -13,8 +13,11 @@ class StatisticsTab:
         # workout the value is a tuple with the format (statistic, date of workout).
         self.statistics = {}
 
+        # List that will contain the search keys used to specify the "layer" of the interactive graph.
+        self.search_keys = []
+
         # Dictionary that will contain the data that is used in the interactive graph.
-        self.interactive_data = {}
+        self.interactive_data = self.get_interactive_graph_data(self.main_window.model.workouts, self.search_keys)
 
         if len(self.main_window.model.workouts) != 0:
             self.process_workouts()
@@ -97,7 +100,7 @@ class StatisticsTab:
         data_name = self.main_window.dataComboBox.currentText().lower()
 
         x = [str(key) for key, value in self.interactive_data.items()]
-        y = [value["data"][data_name] for key, value in self.interactive_data.items()]
+        y = [value[data_name] for key, value in self.interactive_data.items()]
 
         bars = self.main_window.statisticsGraphWidget.canvas.ax.bar(x, y, picker=True)
         self.label_bars(bars)
@@ -111,14 +114,15 @@ class StatisticsTab:
 
         self.main_window.statisticsGraphWidget.canvas.draw()
 
-    @staticmethod
-    def on_pick(event):
-        if isinstance(event.artist, Rectangle):
-            patch = event.artist
-            print('onpick1 patch:', patch.get_path())
-        elif isinstance(event.artist, Text):
+    def on_pick(self, event):
+        if isinstance(event.artist, Text):
             text = event.artist
-            print('onpick1 text:', text.get_text())
+            # Ensuring that we cannot go deeper than the layer of the interactive graph that show daily totals.
+            if len(self.search_keys) < 2:
+                self.search_keys.append(text.get_text())
+                self.interactive_data = self.get_interactive_graph_data(self.main_window.model.workouts,
+                                                                        self.search_keys)
+                self.update_graph()
 
     def label_bars(self, bars):
         """Attach a text label above each bar, displaying its height."""
@@ -158,8 +162,6 @@ class StatisticsTab:
         self.statistics["highest_heart_rate"] = self.get_max_value_date(workouts, "max_heart_rate")
         self.statistics["highest_watt"] = self.get_max_value_date(workouts, "max_watt")
 
-        self.interactive_data = self.get_interactive_graph_data(workouts)
-
     @staticmethod
     def get_max_value_date(workouts, key):
         """
@@ -176,7 +178,7 @@ class StatisticsTab:
 
         return str(workouts[max_index][key]), workouts[max_index]["date_time"]
 
-    def get_interactive_graph_data(self, workouts):
+    def create_interactive_graph_data(self, workouts):
         """
         Creates the dictionary that is used as the data in the interactive graph on the statistics page. The dictionary
         will have multiple layers with the outermost layer containing data for each year, the layer after that
@@ -250,3 +252,71 @@ class StatisticsTab:
             previous_day = date_time.day
 
         return data
+
+    def get_interactive_graph_data(self, workouts, search_keys):
+        """
+        Goes through the workouts and extracts the data that will be used in the interactive graph. The search keys are
+        used to find the data specific to the current configuration of the interactive graph.
+
+        :param workouts: A list of dictionaries where each dictionary represents a workout.
+        :param search_keys: The list of keys used to specify the current "layer" of the interactive graph. For example,
+        search_keys = [2019, 8] means that we should return the daily data for august 2019.
+        :return: A dictionary where each key is a time frame and the value is the totals within that time frame.
+        For example, {2018: totals_2018, 2019: totals_2019, 2020: totals_2020}.
+        """
+        # Reversing the list of workouts so they are to the data in chronological order.
+        workouts = workouts[::-1]
+
+        data = {}
+
+        # If there are no search keys then we are on the year layer of the interactive graph.
+        if len(search_keys) == 0:
+            for workout in workouts:
+                date_time = parser.parse(workout["date_time"], dayfirst=True)
+
+                # Creating a new data dict if the key does not exist meaning that it's the first workout of the year.
+                data[date_time.year] = data.get(date_time.year, {"workouts": 0, "time": 0, "distance": 0, "calories": 0})
+
+                # Adding the data from the workout to the total data for this year.
+                self.add_data_to_totals(workout, data, date_time.year)
+
+        # If there is one search key then we are on the month layer of the interactive graph.
+        if len(search_keys) == 1:
+            # Setting up the dictionary by creating a key-value pair for each month.
+            for month in ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+                          "October", "November", "December"]:
+                data[month] = {"workouts": 0, "time": 0, "distance": 0, "calories": 0}
+
+            # Going through the workouts and adding the data to the totals if the year matches the search key.
+            for workout in workouts:
+                date_time = parser.parse(workout["date_time"], dayfirst=True)
+
+                if date_time.year == int(search_keys[0]):
+                    # Adding the data from the workout to the total data for this month.
+                    self.add_data_to_totals(workout, data, date_time.strftime("%B"))
+
+        # If there are two search keys then we are one the day layer of the interactive graph.
+        if len(search_keys) == 2:
+            # Creating a dictionary used to convert a month string into the month number.
+            month_numbers = {value: key for key, value in enumerate(calendar.month_name)}
+
+            # Setting up the dictionary by creating a key-value pair for each day in the given month.
+            for i in range(calendar.monthrange(year=int(search_keys[0]), month=month_numbers[search_keys[1]])[1]):
+                data[i] = {"workouts": 0, "time": 0, "distance": 0, "calories": 0}
+
+            # Going through the workouts and adding the data to the totals if the year and month match the search keys.
+            for workout in workouts:
+                date_time = parser.parse(workout["date_time"], dayfirst=True)
+
+                if date_time.year == int(search_keys[0]) and date_time.strftime("%B") == search_keys[1]:
+                    # Adding the data from the workout to the total data for this day.
+                    self.add_data_to_totals(workout, data, date_time.day)
+
+        return data
+
+    def add_data_to_totals(self, workout, dictionary, key):
+        """Helper method used to add the data from the workout to the totals for the key of the dictionary."""
+        dictionary[key]["workouts"] += 1
+        dictionary[key]["time"] += self.main_window.timestamp_to_seconds(workout["duration"])
+        dictionary[key]["distance"] += workout["total_distance"]
+        dictionary[key]["calories"] += workout["total_calories"]
