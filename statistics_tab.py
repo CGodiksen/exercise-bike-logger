@@ -102,8 +102,7 @@ class StatisticsTab:
         x = [str(key) for key, value in self.interactive_data.items()]
         y = [value[data_name] for key, value in self.interactive_data.items()]
 
-        bars = self.main_window.statisticsGraphWidget.canvas.ax.bar(x, y, picker=True)
-        self.label_bars(bars)
+        self.main_window.statisticsGraphWidget.canvas.ax.bar(x, y, picker=True)
 
         for label in self.main_window.statisticsGraphWidget.canvas.ax.get_xticklabels():
             label.set_picker(True)
@@ -123,16 +122,6 @@ class StatisticsTab:
                 self.interactive_data = self.get_interactive_graph_data(self.main_window.model.workouts,
                                                                         self.search_keys)
                 self.update_graph()
-
-    def label_bars(self, bars):
-        """Attach a text label above each bar, displaying its height."""
-        for bar in bars:
-            height = bar.get_height()
-            self.main_window.statisticsGraphWidget.canvas.ax.annotate('{}'.format(height),
-                                                                      xy=(bar.get_x() + bar.get_width() / 2, height),
-                                                                      xytext=(0, 3),  # 3 points vertical offset
-                                                                      textcoords="offset points",
-                                                                      ha='center', va='bottom', color="white")
 
     def process_workouts(self):
         """Processes the internal workout list model to extract the needed statistics so they can be displayed."""
