@@ -36,6 +36,9 @@ class StatisticsTab:
         self.main_window.highHeartRateDateButton.clicked.connect(self.go_to_workout)
         self.main_window.highWattDateButton.clicked.connect(self.go_to_workout)
 
+        # When the back button is pressed we go back a single step in the interactive graph.
+        self.main_window.backButton.clicked.connect(self.back)
+
         # When the data combobox is changed we update the graph.
         self.main_window.dataComboBox.currentIndexChanged.connect(self.update_graph)
 
@@ -112,6 +115,13 @@ class StatisticsTab:
         self.main_window.statisticsGraphWidget.canvas.ax.set_ylabel(data_name.capitalize(), color="white", fontsize=12)
 
         self.main_window.statisticsGraphWidget.canvas.draw()
+
+    def back(self):
+        """Going back a single step in the interactive graph by removing a search key from the list of search keys."""
+        if len(self.search_keys) > 0:
+            del self.search_keys[-1]
+            self.interactive_data = self.get_interactive_graph_data(self.main_window.model.workouts, self.search_keys)
+            self.update_graph()
 
     def on_pick(self, event):
         if isinstance(event.artist, Text):
