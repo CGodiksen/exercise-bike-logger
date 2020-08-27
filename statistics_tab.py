@@ -112,6 +112,12 @@ class StatisticsTab:
 
         self.main_window.statisticsGraphWidget.canvas.fig.canvas.mpl_connect('pick_event', self.on_pick)
 
+        # Adding units to the y label if necessary.
+        if data_name == "time":
+            data_name = f"{data_name} (min)"
+        elif data_name == "distance":
+            data_name = f"{data_name} (km)"
+
         self.main_window.statisticsGraphWidget.canvas.ax.set_ylabel(data_name.capitalize(), color="white", fontsize=12)
 
         self.main_window.statisticsGraphWidget.canvas.draw()
@@ -200,7 +206,7 @@ class StatisticsTab:
 
                 # Creating a new data dict if the key does not exist meaning that it's the first workout of the year.
                 data[date_time.year] = data.get(date_time.year,
-                                                {"workouts": 0, "minutes": 0, "distance": 0, "calories": 0})
+                                                {"workouts": 0, "time": 0, "distance": 0, "calories": 0})
 
                 # Adding the data from the workout to the total data for this year.
                 self.add_data_to_totals(workout, data, date_time.year)
@@ -210,7 +216,7 @@ class StatisticsTab:
             # Setting up the dictionary by creating a key-value pair for each month.
             for month in ["January", "February", "March", "April", "May", "June", "July", "August", "September",
                           "October", "November", "December"]:
-                data[month] = {"workouts": 0, "minutes": 0, "distance": 0, "calories": 0}
+                data[month] = {"workouts": 0, "time": 0, "distance": 0, "calories": 0}
 
             # Going through the workouts and adding the data to the totals if the year matches the search key.
             for workout in workouts:
@@ -227,7 +233,7 @@ class StatisticsTab:
 
             # Setting up the dictionary by creating a key-value pair for each day in the given month.
             for i in range(1, calendar.monthrange(year=int(search_keys[0]), month=month_num[search_keys[1]])[1] + 1):
-                data[i] = {"workouts": 0, "minutes": 0, "distance": 0, "calories": 0}
+                data[i] = {"workouts": 0, "time": 0, "distance": 0, "calories": 0}
 
             # Going through the workouts and adding the data to the totals if the year and month match the search keys.
             for workout in workouts:
@@ -242,6 +248,6 @@ class StatisticsTab:
     def add_data_to_totals(self, workout, dictionary, key):
         """Helper method used to add the data from the workout to the totals for the key of the dictionary."""
         dictionary[key]["workouts"] += 1
-        dictionary[key]["minutes"] += self.main_window.timestamp_to_seconds(workout["duration"]) / 60
+        dictionary[key]["time"] += self.main_window.timestamp_to_seconds(workout["duration"]) / 60
         dictionary[key]["distance"] += workout["total_distance"]
         dictionary[key]["calories"] += workout["total_calories"]
