@@ -7,3 +7,9 @@ The project is designed using an object-oriented approach where program executio
 The workout history tab is built around a list of every workout completed through the application. This list is implemented in the **workout_list_model.py** file. Note that this class inherits from **QAbstractListModel** which means that we can use it directly as the internal model for the QListView that is used in the UI. The most interesting element of the statistics tab is the interactive matplotlib graph that shows yearly, monthly and daily totals. To use a matplotlib graph in a QT UI, it is necessary to define a custom widget which supports matplotlib, which is done in the **mplwidget.py** file. 
 
 When the "New workout" button is clicked the user is prompted to configure the time, resistance level and program of the workout. The individual workout programs are implemented in the **workout_program.py** file. When the "Start workout" button on the live workout page is clicked, a bluetooth session instance, defined in **bluetooth_session.py**, is created. This instance is responsible for connecting to the bike and continuously gathering data from the bike throughout the session. The workout session itself is represented by a WorkoutSession instance implemented in the **workout_session.py** file. This instance is responsible for saving the data while the workout in ongoing, processing the data after the workout and saving the processed data to a json file.
+
+## Requirements
+A conventional requirements file is included which means that all dependencies can be installed by navigating to the project directory and typing the following in your cmd:
+```
+$ pip install -r requirements.txt
+```
