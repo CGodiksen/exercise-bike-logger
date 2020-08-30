@@ -23,7 +23,6 @@ class BluetoothSession:
 
     One BluetoothSession object represents one workout session.
     """
-
     def __init__(self, characteristic_uuid, address, workout_session, display_updater):
         """
         Method called when the Bluetooth object is initialized.

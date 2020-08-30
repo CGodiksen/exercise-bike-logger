@@ -18,7 +18,7 @@ class WorkoutListModel(QtCore.QAbstractListModel):
 
         :param QModelIndex: The specific index of the model that we wish to extract data for.
         :param role: The specific data that we wish to extract.
-        :return: The name of the subreddit if the role is DisplayRole.
+        :return: A formatted string showing the date, program and level of the workout if the role is DisplayRole.
         """
         date = self.workouts[QModelIndex.row()]["date_time"]
         program = self.workouts[QModelIndex.row()]["program_name"]

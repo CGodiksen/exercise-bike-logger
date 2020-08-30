@@ -67,7 +67,7 @@ class WorkoutProgram:
         Setting the y-coordinates for program 2. This program slowly increases the resistance level
         by a constant rate over the entire workout.
 
-        Example: level = 10, duration = 10, change_rate = 2, y_coordinates = [10, 10, 11, 11, 12, 12, 13, 13, 14, 14]
+        Example: level = 10, duration = 10, change_rate = 2, levels = [10, 10, 11, 11, 12, 12, 13, 13, 14, 14]
         """
         level = self.level
         change_rate = round(self.duration / 5)
@@ -81,7 +81,7 @@ class WorkoutProgram:
         Setting the y-coordinates for program 3. This program increases the resistance level by a constant rate for the
         first half of the session and then decreases the level back to the initial resistance by the same rate.
 
-        Example: level = 10, duration = 10, change_rate = 1, y_coordinates = [10, 11, 12, 13, 14, 14, 13, 12, 11, 10]
+        Example: level = 10, duration = 10, change_rate = 1, levels = [10, 11, 12, 13, 14, 14, 13, 12, 11, 10]
         """
         level = self.level
         first_half = self.minutes[:len(self.minutes) // 2]
@@ -103,7 +103,7 @@ class WorkoutProgram:
         Setting the y-coordinates for program 3. This program repeats 5 minute sections where the first 2 minutes are
         the initial level, the next two are two levels higher and the last minute is two levels higher again.
 
-        Example: level = 10, duration = 10, y_coordinates = [10, 10, 12, 12, 14, 10, 10, 12, 12, 14]
+        Example: level = 10, duration = 10, levels = [10, 10, 12, 12, 14, 10, 10, 12, 12, 14]
         """
         level = self.level
         for minute in self.minutes:
@@ -120,7 +120,7 @@ class WorkoutProgram:
         Setting the y-coordinates for program 4. This program starts with a warm-up and ends with a cool down, the
         rest is constant. The level increases by two over the first two minutes and decreases by two over the last two.
 
-        Example: level = 10, duration = 10, y_coordinates = [10, 11, 12, 12, 12, 12, 12, 12, 11, 10]
+        Example: level = 10, duration = 10, levels = [10, 11, 12, 12, 12, 12, 12, 12, 11, 10]
         """
         self.levels.append(self.level)
         self.levels.append(self.level + 1)
