@@ -7,7 +7,7 @@ from PyQt5.QtCore import QThreadPool
 
 import bluetooth_session
 from worker import Worker
-from settings_dialog import Settings
+from settings import Settings
 from workout_session import WorkoutSession
 
 
