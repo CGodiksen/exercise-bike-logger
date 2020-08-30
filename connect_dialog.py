@@ -56,11 +56,6 @@ class DeviceListModel(QtCore.QAbstractListModel):
 
         self.threadpool = QtCore.QThreadPool()
 
-    def update_nearby_devices(self):
-        loop = asyncio.get_event_loop()
-        worker = Worker(loop.run_until_complete, self.get_devices())
-        self.threadpool.start(worker)
-
     def data(self, QModelIndex, role=None):
         """
         Returns the data stored under the given role for the item referred to by the index.
@@ -82,8 +77,15 @@ class DeviceListModel(QtCore.QAbstractListModel):
         """
         return len(self.devices)
 
+    def update_nearby_devices(self):
+        self.devices.clear()
+
+        loop = asyncio.get_event_loop()
+        worker = Worker(loop.run_until_complete, self.get_devices())
+        self.threadpool.start(worker)
+
     async def get_devices(self):
-        devices = await bleak.discover()
+        devices = await bleak.discover(2)
         for device in devices:
             self.beginInsertRows(QtCore.QModelIndex(), 0, 0)
             self.devices.append({"name": device.name, "mac_address": device.address})

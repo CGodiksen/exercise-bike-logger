@@ -57,7 +57,7 @@
          </font>
         </property>
         <property name="minimum">
-         <number>5</number>
+         <number>1</number>
         </property>
         <property name="value">
          <number>30</number>

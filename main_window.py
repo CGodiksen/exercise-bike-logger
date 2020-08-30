@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from PyQt5 import QtWidgets, uic
+from PyQt5 import QtWidgets, uic, QtCore
 
 from workout_list_model import WorkoutListModel
 from workout_history_tab import WorkoutHistoryTab
@@ -41,14 +41,18 @@ class MainWindow(QtWidgets.QMainWindow):
         Updates the workout history tab and the statistics tab with the current data. This should be called when a
         new workout is finished.
         """
-        # Updating the workout list view on the workout history tab and selecting the most recent workout.
+        # Updating the workout list view on the workout history tab.
+        self.model.beginInsertRows(QtCore.QModelIndex(), 0, 0)
         self.model.load_workouts()
-        self.model.layoutChanged.emit()
-        self.workoutListView.setCurrentIndex(self.model.createIndex(0, 0))
+        self.model.endInsertRows()
 
-        # Updating the statistics tab with the current data.
+        # Updating the display on the statistics tab with the current data.
         self.statistics_tab.process_workouts()
         self.statistics_tab.update_display()
+
+        # Updating the interactive graph with the current data.
+        self.statistics_tab.interactive_data = self.statistics_tab.get_interactive_graph_data(
+            self.model.workouts, self.statistics_tab.search_keys)
         self.statistics_tab.update_graph()
 
     @staticmethod
