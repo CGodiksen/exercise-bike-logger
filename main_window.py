@@ -5,7 +5,7 @@ from PyQt5 import QtWidgets, uic
 from workout_list_model import WorkoutListModel
 from workout_history_tab import WorkoutHistoryTab
 from statistics_tab import StatisticsTab
-from settings_dialog import SettingsDialog
+from connect_dialog import ConnectDialog
 from configure_dialog import ConfigureDialog
 
 
@@ -31,8 +31,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.configure_dialog = ConfigureDialog(self)
         self.newWorkoutButton.clicked.connect(self.configure_dialog.show)
 
-        self.settings_dialog = SettingsDialog()
-        self.settingsButton.clicked.connect(self.settings_dialog.show)
+        # self.settings_dialog = SettingsDialog()
+        # self.settingsButton.clicked.connect(self.settings_dialog.show)
+        self.connect_dialog = ConnectDialog()
+        self.connectButton.clicked.connect(self.connect_dialog.show)
 
     def update_window(self):
         """
