@@ -1,10 +1,11 @@
 import asyncio
 import struct
 import time
-import bleak
 
-from worker import Worker
+import bleak
 from PyQt5 import QtWidgets, uic, QtCore
+
+from settings import Settings
 
 READ = struct.pack('BBBBB', 0xf0, 0xa2, 0x01, 0x01, 0x94)
 
@@ -21,11 +22,40 @@ class ConnectDialog(QtWidgets.QDialog):
         self.model = DeviceListModel()
         self.deviceListView.setModel(self.model)
 
+        self.uuid = None
+        self.settings = Settings()
+
+        self.accepted.connect(self.ok)
+        self.rejected.connect(lambda: self.model.devices.clear())
         self.updateButton.clicked.connect(self.model.update_nearby_devices)
 
-    async def get_writeable_uuid(self, mac_address, loop):
+    def ok(self):
+        """Getting the writeable uuid using the chosen MAC address and saving the connection settings."""
+        index = self.deviceListView.selectedIndexes()[0]
+
+        if index:
+            address = self.model.devices[index.row()]["address"]
+
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(self.get_writeable_uuid(address, loop))
+
+            # If the uuid is not none it means a viable exercise bike was chosen and we therefore save the settings.
+            if self.uuid is not None:
+                self.settings.address = address
+                self.settings.characteristic_uuid = self.uuid
+                self.settings.save_settings()
+
+    async def get_writeable_uuid(self, address, loop):
+        """
+        Looping through the characteristics of the given device and saving the uuid if a writeable characteristic
+        is found. In this context "writeable" is defined as returning the correct notification when a READ packet is
+        written to the characteristic, meaning that the given device is a viable exercise bike.
+
+        :param address: The MAC address of the BLE device that should be checked for writeable characteristics.
+        :param loop: The event loop used to connect to the device.
+        """
         try:
-            async with bleak.BleakClient(mac_address, loop=loop) as client:
+            async with bleak.BleakClient(address, loop=loop) as client:
                 services = await client.get_services()
                 for key, value in services.characteristics.items():
                     try:
@@ -36,14 +66,16 @@ class ConnectDialog(QtWidgets.QDialog):
                         print(f"Bleak raised an exception: {e}")
         except bleak.BleakError as e:
             print(f"Bleak raised an exception: {e}")
-            await self.get_writeable_uuid(mac_address, loop)
+            await self.get_writeable_uuid(address, loop)
 
-    @staticmethod
-    def notification_handler(sender, data):
-        """Handling the notifications that are received from a characteristic."""
+    def notification_handler(self, sender, data):
+        """
+        Handling the notifications that are received from a characteristic. If the correct notification is received we
+        know the users chosen device is a viable exercise bike and we therefore save the characteristic uuid.
+        """
         # If the data has a length of 21 we know it is a response from the READ write operation.
         if len(data) == 21:
-            print(sender)
+            self.uuid = sender
 
 
 class DeviceListModel(QtCore.QAbstractListModel):
@@ -54,8 +86,6 @@ class DeviceListModel(QtCore.QAbstractListModel):
         # The list that will contain a dictionary for each device.
         self.devices = []
 
-        self.threadpool = QtCore.QThreadPool()
-
     def data(self, QModelIndex, role=None):
         """
         Returns the data stored under the given role for the item referred to by the index.
@@ -65,10 +95,10 @@ class DeviceListModel(QtCore.QAbstractListModel):
         :return: The name and address of the device if the role is DisplayRole.
         """
         name = self.devices[QModelIndex.row()]["name"]
-        mac_address = self.devices[QModelIndex.row()]["mac_address"]
+        address = self.devices[QModelIndex.row()]["address"]
 
         if role == QtCore.Qt.DisplayRole:
-            return f"\n{name} - {mac_address}\n"
+            return f"\n{name} - {address}\n"
 
     def rowCount(self, parent=None, *args, **kwargs):
         """
@@ -78,15 +108,12 @@ class DeviceListModel(QtCore.QAbstractListModel):
         return len(self.devices)
 
     def update_nearby_devices(self):
-        self.devices.clear()
-
+        """Scans for nearby Bluetooth LE devices and adds each found device to the internal list model."""
         loop = asyncio.get_event_loop()
-        worker = Worker(loop.run_until_complete, self.get_devices())
-        self.threadpool.start(worker)
+        devices = loop.run_until_complete(bleak.discover(2.5))
 
-    async def get_devices(self):
-        devices = await bleak.discover(2)
+        self.devices.clear()
         for device in devices:
             self.beginInsertRows(QtCore.QModelIndex(), 0, 0)
-            self.devices.append({"name": device.name, "mac_address": device.address})
+            self.devices.append({"name": device.name, "address": device.address})
             self.endInsertRows()
