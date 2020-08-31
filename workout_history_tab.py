@@ -1,7 +1,6 @@
 import pyqtgraph as pg
 
 
-# TODO: Make it so the workout history is updated automatically when a new workout is done.
 class WorkoutHistoryTab:
     def __init__(self, main_window):
         self.main_window = main_window

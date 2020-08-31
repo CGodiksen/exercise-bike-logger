@@ -31,7 +31,11 @@ class ConnectDialog(QtWidgets.QDialog):
 
     def ok(self):
         """Getting the writeable uuid using the chosen MAC address and saving the connection settings."""
-        index = self.deviceListView.selectedIndexes()[0]
+        index = None
+        try:
+            index = self.deviceListView.selectedIndexes()[0]
+        except IndexError as e:
+            print(f"Connect dialog: {e}")
 
         if index:
             address = self.model.devices[index.row()]["address"]
@@ -44,6 +48,8 @@ class ConnectDialog(QtWidgets.QDialog):
                 self.settings.address = address
                 self.settings.characteristic_uuid = self.uuid
                 self.settings.save_settings()
+
+        self.model.devices.clear()
 
     async def get_writeable_uuid(self, address, loop):
         """
