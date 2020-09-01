@@ -2356,7 +2356,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Total calories</string>
+                <string>Total calories burned</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>

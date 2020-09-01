@@ -2,6 +2,7 @@ from pathlib import Path
 
 from PyQt5 import QtWidgets, uic, QtCore
 
+from settings import Settings
 from workout_list_model import WorkoutListModel
 from workout_history_tab import WorkoutHistoryTab
 from statistics_tab import StatisticsTab
@@ -18,6 +19,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.__create_storage_setup()
 
+        self.settings = Settings()
+        # If the connection settings are empty, we disable the "New workout" button until a connection is established.
+        if self.settings.address == "" or self.settings.characteristic_uuid == "":
+            self.newWorkoutButton.setEnabled(False)
+
         # Setting up the model that handles the workout list view.
         self.model = WorkoutListModel()
         self.model.load_workouts()
@@ -33,7 +39,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # self.settings_dialog = SettingsDialog()
         # self.settingsButton.clicked.connect(self.settings_dialog.show)
-        self.connect_dialog = ConnectDialog()
+        self.connect_dialog = ConnectDialog(self)
         self.connectButton.clicked.connect(self.connect_dialog.show)
 
     def update_window(self):

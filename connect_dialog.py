@@ -12,11 +12,14 @@ READ = struct.pack('BBBBB', 0xf0, 0xa2, 0x01, 0x01, 0x94)
 
 class ConnectDialog(QtWidgets.QDialog):
     """Class representing the dialog window that allows the user to connect with the exercise bike."""
-    def __init__(self, *args, **kwargs):
+    def __init__(self, main_window, *args, **kwargs):
         super(ConnectDialog, self).__init__(*args, **kwargs)
 
         # Load the UI Page.
         uic.loadUi("resources/connectdialog.ui", self)
+
+        # Used to enable the "New workout" button when a connection is established.
+        self.main_window = main_window
 
         # Setting up the model that handles the device list view.
         self.model = DeviceListModel()
@@ -48,6 +51,9 @@ class ConnectDialog(QtWidgets.QDialog):
                 self.settings.address = address
                 self.settings.characteristic_uuid = self.uuid
                 self.settings.save_settings()
+
+                # Ensuring that the "New workout" button is enabled now that a connection can be established.
+                self.main_window.newWorkoutButton.setEnabled(True)
 
         self.model.devices.clear()
 
