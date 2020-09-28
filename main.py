@@ -1,7 +1,9 @@
 import sys
+import mplwidget
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtCore import QFile, QTextStream
+from PyQt5.QtWinExtras import QtWin
 
 from resources import breeze_resources
 from main_window import MainWindow
@@ -9,6 +11,10 @@ from main_window import MainWindow
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
+    app.setWindowIcon(QtGui.QIcon("resources/stationarybicycle.ico"))
+
+    # Changing the app id so our custom window icon is shown on the toolbar.
+    QtWin.setCurrentProcessExplicitAppUserModelID('exercise_bike_logger.v1.0')
 
     main_window = MainWindow()
 
