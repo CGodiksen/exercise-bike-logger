@@ -5,10 +5,10 @@ import pyqtgraph as pg
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtCore import QThreadPool
 
-from src import bluetooth_session
-from src.worker import Worker
-from src.settings import Settings
-from src.workout_session import WorkoutSession
+from exercise_bike_logger import bluetooth_session
+from exercise_bike_logger.worker import Worker
+from exercise_bike_logger.settings import Settings
+from exercise_bike_logger.workout_session import WorkoutSession
 
 
 class WorkoutWindow(QtWidgets.QMainWindow):

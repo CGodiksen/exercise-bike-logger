@@ -2,12 +2,12 @@ from pathlib import Path
 
 from PyQt5 import QtWidgets, uic, QtCore
 
-from src.settings import Settings
-from src.ui.workout_list_model import WorkoutListModel
-from src.ui.workout_history_tab import WorkoutHistoryTab
-from src.ui.statistics_tab import StatisticsTab
-from src.ui.connect_dialog import ConnectDialog
-from src.ui.configure_dialog import ConfigureDialog
+from exercise_bike_logger.settings import Settings
+from exercise_bike_logger.ui.workout_list_model import WorkoutListModel
+from exercise_bike_logger.ui.workout_history_tab import WorkoutHistoryTab
+from exercise_bike_logger.ui.statistics_tab import StatisticsTab
+from exercise_bike_logger.ui.connect_dialog import ConnectDialog
+from exercise_bike_logger.ui.configure_dialog import ConfigureDialog
 
 
 class MainWindow(QtWidgets.QMainWindow):

@@ -4,7 +4,7 @@ from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtCore import QFile, QTextStream
 from PyQt5.QtWinExtras import QtWin
 
-from src.ui.main_window import MainWindow
+from exercise_bike_logger.ui.main_window import MainWindow
 
 
 def main():
