@@ -3,11 +3,11 @@ from pathlib import Path
 from PyQt5 import QtWidgets, uic, QtCore
 
 from src.settings import Settings
-from src.workout_list_model import WorkoutListModel
-from src.workout_history_tab import WorkoutHistoryTab
-from src.statistics_tab import StatisticsTab
-from src.connect_dialog import ConnectDialog
-from src.configure_dialog import ConfigureDialog
+from src.ui.workout_list_model import WorkoutListModel
+from src.ui.workout_history_tab import WorkoutHistoryTab
+from src.ui.statistics_tab import StatisticsTab
+from src.ui.connect_dialog import ConnectDialog
+from src.ui.configure_dialog import ConfigureDialog
 
 
 class MainWindow(QtWidgets.QMainWindow):
