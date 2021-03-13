@@ -1,12 +1,10 @@
 import sys
-import mplwidget
 
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtCore import QFile, QTextStream
 from PyQt5.QtWinExtras import QtWin
 
-from resources import breeze_resources
-from main_window import MainWindow
+from src.main_window import MainWindow
 
 
 def main():

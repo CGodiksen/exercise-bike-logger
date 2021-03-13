@@ -2,8 +2,8 @@ import pyqtgraph as pg
 
 from PyQt5 import QtWidgets, uic
 
-from workout_program import WorkoutProgram
-from workout_window import WorkoutWindow
+from src.workout_program import WorkoutProgram
+from src.workout_window import WorkoutWindow
 
 
 class ConfigureDialog(QtWidgets.QDialog):

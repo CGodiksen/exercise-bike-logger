@@ -5,7 +5,7 @@ import time
 import bleak
 from PyQt5 import QtWidgets, uic, QtCore
 
-from settings import Settings
+from src.settings import Settings
 
 READ = struct.pack('BBBBB', 0xf0, 0xa2, 0x01, 0x01, 0x94)
 

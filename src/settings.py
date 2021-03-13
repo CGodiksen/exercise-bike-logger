@@ -10,7 +10,7 @@ class Settings:
     """
     def __init__(self):
         # If the settings file does not already exist then create a new empty settings file.
-        if "settings.json" not in os.listdir("resources"):
+        if "settings.json" not in os.listdir("../resources"):
             self.create_file()
 
         self.address = ""
