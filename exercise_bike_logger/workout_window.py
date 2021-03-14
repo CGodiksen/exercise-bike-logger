@@ -22,7 +22,7 @@ class WorkoutWindow(QtWidgets.QMainWindow):
         super(WorkoutWindow, self).__init__(*args, **kwargs)
 
         # Load the UI Page.
-        uic.loadUi("resources/workoutwindow.ui", self)
+        uic.loadUi("../resources/workoutwindow.ui", self)
 
         self.session = None
 

@@ -19,18 +19,18 @@ class Settings:
 
     def load_settings(self):
         """Loading the current settings from the settings file."""
-        with open("resources/settings.json", "r") as settings_file:
+        with open("../resources/settings.json", "r") as settings_file:
             settings = json.load(settings_file)
             self.address = settings["address"]
             self.characteristic_uuid = settings["characteristic uuid"]
 
     def save_settings(self):
         """Saving the current settings to the the settings file"""
-        with open("resources/settings.json", "w") as settings_file:
+        with open("../resources/settings.json", "w") as settings_file:
             json.dump({"address": self.address, "characteristic uuid": self.characteristic_uuid}, settings_file)
 
     @staticmethod
     def create_file():
         """Creates an empty settings file."""
-        with open("resources/settings.json", "w+") as settings_file:
+        with open("../resources/settings.json", "w+") as settings_file:
             json.dump({"address": "", "characteristic uuid": ""}, settings_file)

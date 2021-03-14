@@ -38,8 +38,8 @@ class WorkoutListModel(QtCore.QAbstractListModel):
         """Loading the workouts from the json files in the "workouts" folder into the internal model."""
         self.workouts.clear()
 
-        for filename in os.listdir("data/workouts"):
-            with open(f"data/workouts/{filename}", "r") as jsonfile:
+        for filename in os.listdir("../data/workouts"):
+            with open(f"../data/workouts/{filename}", "r") as jsonfile:
                 self.workouts.append(json.load(jsonfile))
 
         # Reversing the list so the most recent workout is first.

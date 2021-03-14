@@ -3,11 +3,11 @@ from pathlib import Path
 from PyQt5 import QtWidgets, uic, QtCore
 
 from exercise_bike_logger.settings import Settings
-from exercise_bike_logger.ui.workout_list_model import WorkoutListModel
-from exercise_bike_logger.ui.workout_history_tab import WorkoutHistoryTab
-from exercise_bike_logger.ui.statistics_tab import StatisticsTab
-from exercise_bike_logger.ui.connect_dialog import ConnectDialog
-from exercise_bike_logger.ui.configure_dialog import ConfigureDialog
+from exercise_bike_logger.workout_list_model import WorkoutListModel
+from exercise_bike_logger.workout_history_tab import WorkoutHistoryTab
+from exercise_bike_logger.statistics_tab import StatisticsTab
+from exercise_bike_logger.connect_dialog import ConnectDialog
+from exercise_bike_logger.configure_dialog import ConfigureDialog
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -15,7 +15,7 @@ class MainWindow(QtWidgets.QMainWindow):
         super(MainWindow, self).__init__(*args, **kwargs)
 
         # Load the UI Page.
-        uic.loadUi("resources/mainwindow.ui", self)
+        uic.loadUi("../resources/mainwindow.ui", self)
 
         self.__create_storage_setup()
 
@@ -77,4 +77,4 @@ class MainWindow(QtWidgets.QMainWindow):
     def __create_storage_setup():
         """Creates the needed storage setup if it does not already exist."""
         # Creating the "data/workouts" directories if they do not already exist.
-        Path("data/workouts").mkdir(parents=True, exist_ok=True)
+        Path("../data/workouts").mkdir(parents=True, exist_ok=True)

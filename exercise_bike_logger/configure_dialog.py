@@ -3,7 +3,7 @@ import pyqtgraph as pg
 from PyQt5 import QtWidgets, uic
 
 from exercise_bike_logger.workout_program import WorkoutProgram
-from exercise_bike_logger.ui.workout_window import WorkoutWindow
+from exercise_bike_logger.workout_window import WorkoutWindow
 
 
 class ConfigureDialog(QtWidgets.QDialog):
@@ -16,7 +16,7 @@ class ConfigureDialog(QtWidgets.QDialog):
         super(ConfigureDialog, self).__init__(*args, **kwargs)
 
         # Load the UI Page.
-        uic.loadUi("resources/configuredialog.ui", self)
+        uic.loadUi("../resources/configuredialog.ui", self)
 
         self.main_window = main_window
 

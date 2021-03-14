@@ -16,7 +16,7 @@ class ConnectDialog(QtWidgets.QDialog):
         super(ConnectDialog, self).__init__(*args, **kwargs)
 
         # Load the UI Page.
-        uic.loadUi("resources/connectdialog.ui", self)
+        uic.loadUi("../resources/connectdialog.ui", self)
 
         # Used to enable the "New workout" button when a connection is established.
         self.main_window = main_window

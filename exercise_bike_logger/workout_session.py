@@ -98,7 +98,7 @@ class WorkoutSession:
         self.max_watt = max(self.watt)
 
         # Serializing the session to save it for later use.
-        with open(f"data/workouts/{self.unix_time}.json", "w+", encoding='utf-8') as jsonfile:
+        with open(f"../data/workouts/{self.unix_time}.json", "w+", encoding='utf-8') as jsonfile:
             # Getting the instance as a dictionary and removing the attributes that we do not want to save.
             session_dict = self.__dict__.copy()
             del session_dict["program"]
