@@ -37,8 +37,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.configure_dialog = ConfigureDialog(self)
         self.newWorkoutButton.clicked.connect(self.configure_dialog.show)
 
-        # self.settings_dialog = SettingsDialog()
-        # self.settingsButton.clicked.connect(self.settings_dialog.show)
         self.connect_dialog = ConnectDialog(self)
         self.connectButton.clicked.connect(self.connect_dialog.show)
 
