@@ -5,6 +5,7 @@ from PyQt5.QtCore import QFile, QTextStream
 from PyQt5.QtWinExtras import QtWin
 
 from exercise_bike_logger.main_window import MainWindow
+from resources import breeze_resources
 
 
 def main():
