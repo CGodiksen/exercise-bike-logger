@@ -4,7 +4,7 @@ cycler==0.10.0
 helpdev==0.7.1
 kiwisolver==1.2.0
 matplotlib==3.2.2
-numpy==1.19.1
+numpy==1.21.0
 pillow>=8.3.2
 pycparser==2.20
 pyparsing==2.4.7
